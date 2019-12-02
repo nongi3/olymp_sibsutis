@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "codeforces-events",
+  "private_key_id": "ee5941bca7a1157b681d493aa66fd77921297ba5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDLjo9N4WQZ8Q+X\nHE0qI+WJ4yVh8gGIyBwTholTJuZpsjm89rFIzRi+ORGO3epkxHVIReCP8yRIGL4K\nrKJjLui++suAT1Qa3+sjBEWzwXTAh1r0KIXUF1nxEjUUTuu71yWCziA4E7frD67D\nEqc8gtJ3d6KrrPUWt7zu9VMvebau1ZHIGiHikomXwKMIxyLVOesbLRv9aRRGJNPt\nZeO12xQBSbZRYyxjxO4XxBhbJIbHLE5OIymheXmHpk6a3NDavTPfrUiuqmxlEw7t\nYVz9UjQep7h0Vy8bRq3vjR2gZlvq+WxS2kcN7x8fMHEtxvgCD9qmdStPkzERatmN\nZyBa4lNdAgMBAAECggEAAIw3GZpqT+7SCifQXafYmPqe/MmPT1bU0cWT7Zhtzjw2\nWUvyolR8172O4uDrndP0IZJPnXRih70h76t4JEinKReNFfGWmGzdPS98ra8rjIrc\nfBSYXAMGtHtGTBPtwmaNkDT8x64O9JrU6JO6WdbHVCVVSirp/32tVnDYLfTrA//i\nrNCbzYU4GN8QUxT+5ZETAvzfDGHYWbKbDQ7Yp3dBJBW9tzF1EZSnM6Gvb1BhkOsu\nJzjw4MpQ0+GWibrObM2GDhHlpQSjrtK/NtE8ysf0N4vM4Xl6vWvg5rV3rdKnxVUT\nm6+WtQb9TY8qsG0G8gR+gFbo+vbNhjHfdFch9uLKcwKBgQDsmQAVdixmIIwds0YV\nG1uSEwv4Gk9e8PuNekWM8CUgkCDoiYYJIRHt16odFwHA3e4qJpNQ3Qnizbf5rJCW\ncCtXp1nmqlMXMTT8wKcDNou0nF2WVJVMz53i4jsE9ikz8hLIq8MKpskpsslZo3TH\nBedp6iuGor+lf9y3ox534FCMCwKBgQDcP+tsKh9oD9xoPZ7iC6pkZxTmn4VLfFhc\n1BUa1jHD9ZceaJnwqZo3puru7XPSzw9Grb90dCgrIKEMm/dr7AnpCPwygCp1Md4+\n+GIiIChW5hbuuUUbP2pIYnmvVlsWCNy3Z53npwtZI77xUTLmFHd0mze4V2m9PHki\nGi3Hb0XXNwKBgQCXqIdWOnbBTBGkpBrDQtMSsmTUt0CzUfNdP8g/TFvwIJMHm8ew\nKGOOutRPa0TzdQ7KNAnwJo/Esys/vq67z9DokdxdsEYssp0NewxTUe6Bak3PJA7D\nur2xBmTgjE3i/0OtH/SY6ko+EV1huRYM0SsCSFl4JvCDzI8Vo1jPbJkU+wKBgQCV\nNUBaAJdSOhyJCeXPITQH3MWOD1eP8ecyzAKYMa95H7GGyjovjdaKCSxzPK4QjHG+\n4gon7GEiBnLURfzyQe/czVd9JtKcnnH/mulwUPTDGhFDHIQyl117OCtTm18NqGdO\nYIXa35GSi+LZPLcMo6ThfB3dZmqd5o/xiGanCzz3NQKBgQCSWe5r8oMlDBggL5VB\niDFZqwmrNR/PmnzUXLW/FCkGnYMBAHtL432ySNAjeCEZbLPuPCLaNl/MRibrj7WO\nPSES0ott5P18q0pSiQbopYE7VtLlsSeRR9v5TnWf+F2ZSX8lF5ek/Btq7jxtunFv\nW7TBmmfhW8oYJksMMdINiVcDxg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "account@codeforces-events.iam.gserviceaccount.com",
+  "client_id": "110815443907021514321",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/account%40codeforces-events.iam.gserviceaccount.com"
+}
