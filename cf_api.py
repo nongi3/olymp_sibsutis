@@ -89,17 +89,7 @@ def findCodeforcesPoints(handle):
         res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     # print(handle)
     return int(res)
-
-def myOwnSort(data):
-    i = 0
-    while i + 1 < len(data):
-        j = 0
-        while j + 1 < len(data) - i:
-            if float(data[j][1]) < float(data[j + 1][1]):
-                data[j], data[j + 1] = data[j + 1], data[j]
-            j = j + 1
-        i = i + 1
-    return data
+    
 
 def changeCodeforcesInfo():
     data = {}
@@ -114,9 +104,8 @@ def changeCodeforcesInfo():
         tmp.append(str(codeforces_points + additional_points))
         tmp.append(str(codeforces_points))
         tmp.append(str(additional_points))
-        data['values'].append(tmp);
-    data['values'] = myOwnSort(data['values'])
-    # data['values'] = sorted(data['values'], key=functools.cmp_to_key(cmp))
+        data['values'].append(tmp)
+    data['values'] = sorted(data['values'], key=lambda value: value[1])
 
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
