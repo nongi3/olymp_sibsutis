@@ -9,85 +9,12 @@ import time
 import functools
 from oauth2client.service_account import ServiceAccountCredentials
 
+import constant
+
 
 CREDENTIALS_FILE = 'creds.json'
-# ID Google Sheets документа (можно взять из его URL)
-spreadsheet_id = '1gJYZf7wQE0ReIgR8idpZnqqgSPKQmlkQtnaO3XwGcJI'
 
-
-handles = [
-"nongi",
-"UWPLP",
-"kcherdakov",
-"Qalmee",
-"genybr",
-"Mazx1998",
-"stMark",
-"Thundbird",
-"bedsus",
-"Allen_Mett",
-"Shadow-of-Dreams",
-"Levcor",
-"andrew_raiden",
-"niloniol",
-"Mary12",
-"Minddarkness",
-"PowerOfBalls",
-"Alecks",
-"Tornem",
-"ikrisi",
-"RushBush",
-"fkz_12",
-"Arishenk",
-"Flanterz",
-"Fonriter98",
-"ruban",
-"jeanstefanovich",
-"Brandon_Roadgears_",
-"Soul_Catcher",
-"shise",
-"Izeytee",
-"wartemw",
-"deluck",
-"gedenteen",
-"Marks53",
-"Dream_Tea",
-"Kagary",
-"F14rk",
-"JustBoss",
-"Animeshka",
-"Lampcomm",
-"Nottey",
-"alexger1999",
-"Tod-cun",
-"osipovcf",
-"MikeAirone",
-"Karina8941",
-"Aleksey-Kn",
-"Makisto",
-"Asakujaku",
-"Hostel_B",
-"fredboy",
-"aldinger_a",
-"Restov",
-"BarebuhPuh",
-"virride",
-"Hazzi",
-"fancyFox",
-"Sheshesi",
-"Gadyka",
-"Grawyn",
-"Baburr",
-"tryblyat7",
-"MangriMen",
-"_HiFive",
-"QWOP1234",
-"Daniil_hrpo",
-"isugihere",
-"sweetechka",
-"El_Duderino",
-"QualDiv2",]
-
+handles_ = []
 
 def cmp(a, b):
     if a[0] < b[0]:
@@ -107,11 +34,28 @@ httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
 # Пример чтения файла
-values = service.spreadsheets().values().get(
-    spreadsheetId=spreadsheet_id,
-    range='A1:E10',
-    majorDimension='COLUMNS'
-).execute()
+# values = service.spreadsheets().values().get(
+#     spreadsheetId=spreadsheet_id,
+#     range='A1:E10',
+#     majorDimension='COLUMNS'
+# ).execute()
+
+def get_handles():
+    values = service.spreadsheets().values().get(
+        spreadsheetId=constant.spreadsheet_id,
+        range='A2:A200',
+        majorDimension='COLUMNS'
+    ).execute()
+    global handles_
+    for handle in values['values']:
+        handles_.append(handle[0])
+    # print(handles_)
+
+def add_new_handle(new_handle):
+    get_handles()
+    if new_handle not in handles_:
+        handles_.append(new_handle)
+        changeCodeforcesInfo()
 
 def findCodeforcesPoints(handle):
     request_url = 'http://codeforces.com/api/user.status?handle=' + handle
@@ -119,7 +63,6 @@ def findCodeforcesPoints(handle):
     time.sleep(1)
     res = json.loads(response.read())
     ans = {}
-    usedContestNames = {}
     for i in res['result']:
         if 'contestId' not in i:
             continue
@@ -141,9 +84,10 @@ def findCodeforcesPoints(handle):
                     ans[rating] = ans[rating] + 1
     res = 0
     for i in ans:
-        res += ((i / 100) - 4) * ans[i]
-    print(handle)
-    return res
+        d = min(ans[i], 100)
+        res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
+    # print(handle)
+    return int(res)
 
 def myOwnSort(data):
     i = 0
@@ -157,12 +101,11 @@ def myOwnSort(data):
     return data
 
 def changeCodeforcesInfo():
-    ind = 1
     data = {}
-    data['range'] = 'A2:D' + str(len(handles) + 1)
+    data['range'] = 'A2:D' + str(len(handles_) + 1)
     data['majorDimension'] = 'ROWS'
     data['values'] = []
-    for i in handles:
+    for i in handles_:
         tmp = []
         tmp.append(i)
         codeforces_points = findCodeforcesPoints(i)
@@ -181,7 +124,7 @@ def changeCodeforcesInfo():
     # print(buv)
 
     service.spreadsheets().values().batchUpdate(
-        spreadsheetId=spreadsheet_id,
+        spreadsheetId=constant.spreadsheet_id,
         body=buv
     ).execute()
 
@@ -194,9 +137,11 @@ def changeHeader():
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
     service.spreadsheets().values().batchUpdate(
-        spreadsheetId=spreadsheet_id,
+        spreadsheetId=constant.spreadsheet_id,
         body=buv
     ).execute()
 
 # changeHeader()
-changeCodeforcesInfo()
+# changeCodeforcesInfo()
+# get_handles()
+# add_new_handle('nongi')
