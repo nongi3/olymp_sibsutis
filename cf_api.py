@@ -47,8 +47,9 @@ def get_handles():
         majorDimension='COLUMNS'
     ).execute()
     global handles_
-    for handle in values['values']:
-        handles_.append(handle[0])
+    handles_ = values['values'][0]
+    # for handle in values['values']:
+    #     handles_.append(handle[0])
     # print(handles_)
 
 def add_new_handle(new_handle):
