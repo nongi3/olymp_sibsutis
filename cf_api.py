@@ -33,14 +33,6 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
-def getAllUsersInfo():
-    values = service.spreadsheets().values().get(
-        spreadsheetId=constant.spreadsheet_id,
-        range='A2:F200',
-        majorDimension='ROWS'
-    ).execute()
-    print(values)
-
 def get_handles():
     values = service.spreadsheets().values().get(
         spreadsheetId=constant.spreadsheet_id,
@@ -111,7 +103,8 @@ def changeCodeforcesInfo():
         tmp.append(str(codeforces_points))
         tmp.append(str(additional_points))
         data['values'].append(tmp)
-    data['values'] = sorted(data['values'], key=lambda value: value[2])
+    data['values'] = sorted(data['values'], key=lambda value: int(value[2]), reverse=True)
+    # print(data['values'])
 
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'

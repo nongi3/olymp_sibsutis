@@ -7,6 +7,7 @@ import urllib.request
 
 import cf_api
 import constant
+import table
 
 # API-ключ созданный ранее
 
@@ -67,7 +68,7 @@ def main():
     init()
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
-            # print('abacaba', event.text.lower())
+            print('abacaba', event.text.lower())
             command = event.text.lower()
             if command in sinc_:
                 try_to_sinc(event.user_id)
@@ -75,6 +76,8 @@ def main():
                 exit()
             elif command in constant.bad_words:
                 write_message(event.user_id, 'Сам такой!!!')
+            elif command in constant.balance:
+                table.getPointsWithVkId(event.user_id)
             else:
                 write_message(event.user_id, 'Я не понимаю вас :-(');
             continue
