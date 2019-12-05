@@ -33,12 +33,13 @@ credentials = ServiceAccountCredentials.from_json_keyfile_name(
 httpAuth = credentials.authorize(httplib2.Http())
 service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
 
-# Пример чтения файла
-# values = service.spreadsheets().values().get(
-#     spreadsheetId=spreadsheet_id,
-#     range='A1:E10',
-#     majorDimension='COLUMNS'
-# ).execute()
+def getAllUsersInfo():
+    values = service.spreadsheets().values().get(
+        spreadsheetId=constant.spreadsheet_id,
+        range='A2:F200',
+        majorDimension='ROWS'
+    ).execute()
+    print(values)
 
 def get_handles():
     values = service.spreadsheets().values().get(
@@ -48,9 +49,6 @@ def get_handles():
     ).execute()
     global handles_
     handles_ = values['values'][0]
-    # for handle in values['values']:
-    #     handles_.append(handle[0])
-    # print(handles_)
 
 def add_new_handle(new_handle):
     get_handles()
@@ -89,23 +87,31 @@ def findCodeforcesPoints(handle):
         res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     # print(handle)
     return int(res)
-    
+
+def getVkIdFromCodeforces(handle):
+    request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+    response = urllib.request.urlopen(request_url)
+    res = json.loads(response.read())
+    return res['result'][0]['vkId']
 
 def changeCodeforcesInfo():
     data = {}
-    data['range'] = 'A2:D' + str(len(handles_) + 1)
+    global handles_
+    get_handles()
+    data['range'] = 'A2:E' + str(len(handles_) + 1)
     data['majorDimension'] = 'ROWS'
     data['values'] = []
     for i in handles_:
         tmp = []
         tmp.append(i)
+        tmp.append(getVkIdFromCodeforces(i))
         codeforces_points = findCodeforcesPoints(i)
         additional_points = 0
         tmp.append(str(codeforces_points + additional_points))
         tmp.append(str(codeforces_points))
         tmp.append(str(additional_points))
         data['values'].append(tmp)
-    data['values'] = sorted(data['values'], key=lambda value: value[1])
+    data['values'] = sorted(data['values'], key=lambda value: value[2])
 
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
@@ -120,9 +126,10 @@ def changeCodeforcesInfo():
 
 def changeHeader():
     data = {}
-    data['range'] = 'A1:D1'
+    data['range'] = 'A1:F1'
     data['majorDimension'] = 'Columns'
-    data['values'] = [['Ники на codeforces'], ['Общее количество баллов'], ['Очки с кодфорса'], ['Дополнительные баллы']]
+    data['values'] = [['Ники на codeforces'], ['vkId'], ['Общее количество баллов'], ['Очки с кодфорса'],
+                      ['Дополнительные баллы'], ['Потраченные баллы']]
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
