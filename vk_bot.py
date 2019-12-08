@@ -8,6 +8,7 @@ import urllib.request
 import cf_api
 import constant
 import table
+import goods
 
 # API-ключ созданный ранее
 
@@ -56,7 +57,7 @@ def try_to_sinc(user_id):
                 return 1
             vk_id_from_cf = res['result'][0]['vkId']
             if str(user_id) == str(vk_id_from_cf):
-                cf_api.add_new_handle(handle)
+                table.addNewUser(handle, user_id)
                 write_message(user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
             else:
                 write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
@@ -64,11 +65,20 @@ def try_to_sinc(user_id):
             return 0
     return 1
 
+def isDivTwo(st):
+    a = st.split()
+    if len(a) != 2:
+        return 0
+    if a[0] != 'div2' or a[1].isdigit() == 0:
+        return 0
+    return 1
+
 def main():
     init()
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
-            print('abacaba', event.text.lower())
+            # print('abacaba', event.text.lower())
+            print(event.text)
             command = event.text.lower()
             if command in sinc_:
                 try_to_sinc(event.user_id)
@@ -77,9 +87,33 @@ def main():
             elif command in constant.bad_words:
                 write_message(event.user_id, 'Сам такой!!!')
             elif command in constant.balance:
-                table.getPointsWithVkId(event.user_id)
+                points = table.getPointsWithVkId(event.user_id)
+                if points < 0:
+                    write_message(event.user_id, 'Не удалось получить данные о вашем счете!')
+                else:
+                    write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
+            elif command in constant.GOOD_WORDS_:
+                write_message(event.user_id, 'Какой вы клевый! Уважаю!')
+            elif command in constant.RESET_POINTS_:
+                table.resetPointsWithVkId(event.user_id)
+            elif command in constant.BATTLE_:
+                write_message(event.user_id, 'Да начнется битва!')
+                table.resetCfPoints()
+            elif isDivTwo(command) > 0:
+                a = command.split()
+                if table.isEnoughtForBet(event.user_id, a[1]) < 1:
+                    write_message(event.user_id, 'У вас слишком мало баллов или '
+                                                 'ваша ставка слишком маленькая (минимальная ставка 10 sp).')
+                    continue
+                write_message(event.user_id, 'Ваша ставка принята!')
+                table.setSpentPointsWithVkId(event.user_id, a[1])
+                goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
+
             else:
-                write_message(event.user_id, 'Я не понимаю вас :-(');
+                if (event.user_id == '413059663'):
+                    write_message(event.user_id, 'Хуй будешь?')
+                else:
+                    write_message(event.user_id, 'Я не понимаю вас :-(')
             continue
 
 main()

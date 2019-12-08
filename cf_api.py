@@ -44,9 +44,11 @@ def get_handles():
 
 def add_new_handle(new_handle):
     get_handles()
+    global handles_
     if new_handle not in handles_:
         handles_.append(new_handle)
         changeCodeforcesInfo()
+
 
 def findCodeforcesPoints(handle):
     request_url = 'http://codeforces.com/api/user.status?handle=' + handle
@@ -86,37 +88,6 @@ def getVkIdFromCodeforces(handle):
     res = json.loads(response.read())
     return res['result'][0]['vkId']
 
-def changeCodeforcesInfo():
-    data = {}
-    global handles_
-    get_handles()
-    data['range'] = 'A2:E' + str(len(handles_) + 1)
-    data['majorDimension'] = 'ROWS'
-    data['values'] = []
-    for i in handles_:
-        tmp = []
-        tmp.append(i)
-        tmp.append(getVkIdFromCodeforces(i))
-        codeforces_points = findCodeforcesPoints(i)
-        additional_points = 0
-        tmp.append(str(codeforces_points + additional_points))
-        tmp.append(str(codeforces_points))
-        tmp.append(str(additional_points))
-        data['values'].append(tmp)
-    data['values'] = sorted(data['values'], key=lambda value: int(value[2]), reverse=True)
-    # print(data['values'])
-
-    buv = {}
-    buv['value_input_option'] = 'USER_ENTERED'
-    buv['data'] = data
-
-    # print(buv)
-
-    service.spreadsheets().values().batchUpdate(
-        spreadsheetId=constant.spreadsheet_id,
-        body=buv
-    ).execute()
-
 def changeHeader():
     data = {}
     data['range'] = 'A1:F1'
@@ -130,6 +101,38 @@ def changeHeader():
         spreadsheetId=constant.spreadsheet_id,
         body=buv
     ).execute()
+
+def getUserInfoWithHandle(handle):
+    request_url = 'http://codeforces.com/api/user.status?handle=' + handle
+    response = urllib.request.urlopen(request_url)
+    res = json.loads(response.read())
+    ans = {}
+    for i in res['result']:
+        if 'contestId' not in i:
+            continue
+        contestId = i['contestId']
+        if 'problem' not in i:
+            continue
+        if 'rating' not in i['problem']:
+            continue
+        rating = i['problem']['rating']
+        if i['verdict'] == 'OK':
+            if contestId < 10000:
+                if rating not in ans:
+                    ans[rating] = 1
+                else:
+                    ans[rating] = ans[rating] + 1
+    res = 0
+    for i in ans:
+        d = min(ans[i], 100)
+        res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
+    tmp = []
+    tmp.append(handle)
+    tmp.append(getVkIdFromCodeforces(handle))
+    tmp.append(str(int(res)))
+    tmp.append(str(int(res)))
+    tmp.append(str(0))
+    return tmp
 
 # changeHeader()
 # changeCodeforcesInfo()
