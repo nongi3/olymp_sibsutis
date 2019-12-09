@@ -18,18 +18,9 @@ def cmp(a, b):
     else:
         return 0
 
-def get_handles():
-    values = constant.service.spreadsheets().values().get(
-        spreadsheetId=constant.spreadsheet_id,
-        range='A2:A200',
-        majorDimension='COLUMNS'
-    ).execute()
-    global handles_
-    handles_ = values['values'][0]
-
 def add_new_handle(new_handle):
-    get_handles()
     global handles_
+    handles_ = table.getHandles()
     if new_handle not in handles_:
         handles_.append(new_handle)
         changeCodeforcesInfo()
@@ -71,20 +62,6 @@ def getVkIdFromCodeforces(handle):
     response = urllib.request.urlopen(request_url)
     res = json.loads(response.read())
     return res['result'][0]['vkId']
-
-def changeHeader():
-    data = {}
-    data['range'] = 'A1:F1'
-    data['majorDimension'] = 'Columns'
-    data['values'] = [['Ники на codeforces'], ['vkId'], ['Общее количество баллов'], ['Очки с кодфорса'],
-                      ['Дополнительные баллы'], ['Потраченные баллы']]
-    buv = {}
-    buv['value_input_option'] = 'USER_ENTERED'
-    buv['data'] = data
-    constant.service.spreadsheets().values().batchUpdate(
-        spreadsheetId=constant.spreadsheet_id,
-        body=buv
-    ).execute()
 
 def getUserInfoWithHandle(handle):
     request_url = 'http://codeforces.com/api/user.status?handle=' + handle

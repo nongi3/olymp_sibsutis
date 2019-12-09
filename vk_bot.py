@@ -53,14 +53,12 @@ def try_to_sync(user_id):
 
 def isDivTwo(st):
     a = st.split()
-    if len(a) != 2:
+    if a[0] == 'div2' and len(a) == 2:
+        return 1
+    else:
         return 0
-    if a[0] != 'div2' or a[1].isdigit() == 0:
-        return 0
-    return 1
 
 def main():
-    init()
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             # print('abacaba', event.text.lower())
@@ -81,18 +79,22 @@ def main():
                 write_message(event.user_id, 'Какой вы клевый! Уважаю!')
             elif command in constant.RESET_POINTS_:
                 table.resetPointsWithVkId(event.user_id)
-            elif command in constant.BATTLE_:
-                write_message(event.user_id, 'Да начнется битва!')
-                table.resetCfPoints()
             elif isDivTwo(command) > 0:
                 a = command.split()
-                if table.isEnoughtForBet(event.user_id, a[1]) < 1:
-                    write_message(event.user_id, 'У вас слишком мало баллов или '
-                                                 'ваша ставка слишком маленькая (минимальная ставка 10 sp).')
-                    continue
-                write_message(event.user_id, 'Ваша ставка принята!')
-                table.setSpentPointsWithVkId(event.user_id, a[1])
-                goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
+                if a[1].isdigit():
+                    if table.isEnoughtForBet(event.user_id, a[1]) < 1:
+                        write_message(event.user_id, 'У вас слишком мало баллов или '
+                                                     'ваша ставка слишком маленькая (минимальная ставка 10 sp).')
+                        continue
+                    write_message(event.user_id, 'Ваша ставка принята!')
+                    table.setSpentPointsWithVkId(event.user_id, a[1])
+                    goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
+                elif a[1].lower() == 'cancel':
+                    goods.tryToCancelDivTwoBet(table.getHandleWithVkId(event.user_id))
+                    write_message(event.user_id, 'Ваша ставка на проведение контеста '
+                                                 'второго дивизиона успешно аннулирована.')
+                else:
+                    write_message(event.user_id, 'У команды div2 нет такого параметра!')
             elif command in constant.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             else:

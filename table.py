@@ -89,3 +89,34 @@ def addNewUser(handle, vkId):
     tmp.append(str(0));
     values.append(tmp)
     setAllUsersInfo(values)
+
+def getHandles():
+    values = constant.service.spreadsheets().values().get(
+        spreadsheetId=constant.spreadsheet_id,
+        range='A2:A200',
+        majorDimension='COLUMNS'
+    ).execute()
+    return values['values'][0]
+
+def changeHeader():
+    data = {}
+    data['range'] = 'A1:F1'
+    data['majorDimension'] = 'Columns'
+    data['values'] = [['Ники на codeforces'], ['vkId'], ['Общее количество баллов'], ['Очки с кодфорса'],
+                      ['Дополнительные баллы'], ['Потраченные баллы']]
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+    constant.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=constant.spreadsheet_id,
+        body=buv
+    ).execute()
+
+def afterSuccseccCanselingDiwTo(handle, sp):
+    values = getAllUsersInfo()
+    for value in values:
+        if value[0] == handle:
+            value[5] = str(int(value[5]) - int(sp))
+            value[2] = str(int(value[3]) + int(value[4]) - int(value[5]))
+            setAllUsersInfo(values)
+            break
