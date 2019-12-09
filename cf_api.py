@@ -1,18 +1,12 @@
 from pprint import pprint
 
 import urllib.request
-import httplib2
-import apiclient.discovery
 import json
 import datetime
 import time
 import functools
-from oauth2client.service_account import ServiceAccountCredentials
 
 import constant
-
-
-CREDENTIALS_FILE = 'creds.json'
 
 handles_ = []
 
@@ -24,17 +18,8 @@ def cmp(a, b):
     else:
         return 0
 
-
-# Авторизуемся и получаем service — экземпляр доступа к API
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    CREDENTIALS_FILE,
-    ['https://www.googleapis.com/auth/spreadsheets',
-     'https://www.googleapis.com/auth/drive'])
-httpAuth = credentials.authorize(httplib2.Http())
-service = apiclient.discovery.build('sheets', 'v4', http = httpAuth)
-
 def get_handles():
-    values = service.spreadsheets().values().get(
+    values = constant.service.spreadsheets().values().get(
         spreadsheetId=constant.spreadsheet_id,
         range='A2:A200',
         majorDimension='COLUMNS'
@@ -97,7 +82,7 @@ def changeHeader():
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
-    service.spreadsheets().values().batchUpdate(
+    constant.service.spreadsheets().values().batchUpdate(
         spreadsheetId=constant.spreadsheet_id,
         body=buv
     ).execute()
@@ -133,8 +118,3 @@ def getUserInfoWithHandle(handle):
     tmp.append(str(int(res)))
     tmp.append(str(0))
     return tmp
-
-# changeHeader()
-# changeCodeforcesInfo()
-# get_handles()
-# add_new_handle('nongi')
