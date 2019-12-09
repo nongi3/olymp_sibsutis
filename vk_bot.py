@@ -10,30 +10,16 @@ import constant
 import table
 import goods
 
-# API-ключ созданный ранее
-
-
 vk_session = vk_api.VkApi(token=constant.token)
 
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
 
-sinc_ = []
-exit_commands_ = []
-
 def write_message(user_id, msg):
     random_id = random.randint(1, 1234567898765)
     vk_session.method('messages.send', {'user_id': user_id, 'message': msg, 'random_id': random_id})
 
-def init():
-    global sync_
-    global exit_commands_
-    sinc_.append('синхра')
-    sinc_.append('sync')
-    sinc_.append('add')
-    exit_commands_.append('exit')
-
-def try_to_sinc(user_id):
+def try_to_sync(user_id):
     write_message(user_id, 'Введите ваш хэндл на codeforces для '
                            'добавления вас в таблицу и синхронизации с аккаунтом vk')
     for event in longpoll.listen():
@@ -78,11 +64,10 @@ def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             # print('abacaba', event.text.lower())
-            print(event.text)
             command = event.text.lower()
-            if command in sinc_:
-                try_to_sinc(event.user_id)
-            elif command in exit_commands_:
+            if command in constant.SYNC_:
+                try_to_sync(event.user_id)
+            elif command in constant.EXIT_COMMANDS_:
                 exit()
             elif command in constant.bad_words:
                 write_message(event.user_id, 'Сам такой!!!')
@@ -108,7 +93,8 @@ def main():
                 write_message(event.user_id, 'Ваша ставка принята!')
                 table.setSpentPointsWithVkId(event.user_id, a[1])
                 goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
-
+            elif command in constant.HELLO_:
+                write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             else:
                 if (event.user_id == '413059663'):
                     write_message(event.user_id, 'Хуй будешь?')

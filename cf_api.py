@@ -64,7 +64,6 @@ def findCodeforcesPoints(handle):
     for i in ans:
         d = min(ans[i], 100)
         res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
-    # print(handle)
     return int(res)
 
 def getVkIdFromCodeforces(handle):
