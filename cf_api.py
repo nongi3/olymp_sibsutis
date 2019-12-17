@@ -62,35 +62,3 @@ def getVkIdFromCodeforces(handle):
     response = urllib.request.urlopen(request_url)
     res = json.loads(response.read())
     return res['result'][0]['vkId']
-
-def getUserInfoWithHandle(handle):
-    request_url = 'http://codeforces.com/api/user.status?handle=' + handle
-    response = urllib.request.urlopen(request_url)
-    res = json.loads(response.read())
-    ans = {}
-    for i in res['result']:
-        if 'contestId' not in i:
-            continue
-        contestId = i['contestId']
-        if 'problem' not in i:
-            continue
-        if 'rating' not in i['problem']:
-            continue
-        rating = i['problem']['rating']
-        if i['verdict'] == 'OK':
-            if contestId < 10000:
-                if rating not in ans:
-                    ans[rating] = 1
-                else:
-                    ans[rating] = ans[rating] + 1
-    res = 0
-    for i in ans:
-        d = min(ans[i], 100)
-        res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
-    tmp = []
-    tmp.append(handle)
-    tmp.append(getVkIdFromCodeforces(handle))
-    tmp.append(str(int(res)))
-    tmp.append(str(int(res)))
-    tmp.append(str(0))
-    return tmp

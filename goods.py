@@ -56,15 +56,14 @@ def tryToAddDivTwoBet(handle, bet):
     for value in values:
         if is_find:
             value[0] = str(int(value[0]) + int(bet))
-            print(values)
             setAllDivTwoBets(values)
-            return 0
+            return
         if value[0] == handle:
             is_find = True
     values.append([handle])
     values.append([str(bet)])
     setAllDivTwoBets(values)
-    return 0
+    return
 
 def tryToCancelDivTwoBet(handle):
     values = getAllDivTwoBets()

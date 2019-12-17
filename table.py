@@ -57,8 +57,8 @@ def resetPointsWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
         if str(value[1]) == str(vkId):
-            value = cf_api.getUserInfoWithHandle(value[0])
-            print (cf_api.getUserInfoWithHandle(value[0]), value)
+            value[3] = cf_api.findCodeforcesPoints(value[0])
+            value[2] = str(int(value[3]) + int(value[4]) - int(value[5]))
             setAllUsersInfo(values)
             break
 
@@ -120,3 +120,10 @@ def afterSuccseccCanselingDiwTo(handle, sp):
             value[2] = str(int(value[3]) + int(value[4]) - int(value[5]))
             setAllUsersInfo(values)
             break
+
+def resetAllUsersInfo():
+    values = getAllUsersInfo()
+    for value in values:
+        value[3] = cf_api.findCodeforcesPoints(value[0])
+        value[2] = str(int(value[3]) + int(value[4]) - int(value[5]))
+    setAllUsersInfo(values)

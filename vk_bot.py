@@ -90,7 +90,7 @@ def main():
             elif command in constant.EXIT_COMMANDS_:
                 exit()
             elif isLottery(command):
-                if str(event.user_id) == '248231765':
+                if str(event.user_id) == '30806644':
                     global is_lottery_start
                     if (command == 'розыгрыш'):
                         if is_lottery_start:
@@ -134,8 +134,12 @@ def main():
                     write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
             elif command in constant.GOOD_WORDS_:
                 write_message(event.user_id, 'Какой вы клевый! Уважаю!')
-            elif command in constant.RESET_POINTS_:
+            elif command in constant.RESET_ONE_USER_POINTS_:
                 table.resetPointsWithVkId(event.user_id)
+                write_message(event.user_id, 'Данные успешно обновлены!')
+            elif command in constant.RESET_ALL_USERS_POINTS_ and str(event.user_id) == '30806644':
+                table.resetAllUsersInfo()
+                write_message(event.user_id, 'Таблица полностью обновлена!')
             elif isDivTwo(command) > 0:
                 a = command.split()
                 if a[1].isdigit():
@@ -143,9 +147,9 @@ def main():
                         write_message(event.user_id, 'У вас слишком мало баллов или '
                                                      'ваша ставка слишком маленькая (минимальная ставка 10 sp).')
                         continue
-                    write_message(event.user_id, 'Ваша ставка принята!')
                     table.setSpentPointsWithVkId(event.user_id, a[1])
                     goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
+                    write_message(event.user_id, 'Ваша ставка принята!')
                 elif a[1].lower() == 'cancel':
                     goods.tryToCancelDivTwoBet(table.getHandleWithVkId(event.user_id))
                     write_message(event.user_id, 'Ваша ставка на проведение контеста '
