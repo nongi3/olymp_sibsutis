@@ -76,5 +76,24 @@ def tryToCancelDivTwoBet(handle):
             setAllDivTwoBets(values)
             break
 
-# resetAllDivTwoBets()
-# tryToCancelDivTwoBet('nongi')
+def getSumOfDivTwoBets():
+    return int(constant.service.spreadsheets().values().get(
+        spreadsheetId=constant.os_goods_sh_id,
+        range='D3:D3',
+        majorDimension='ROWS'
+    ).execute()['values'][0][0])
+
+def getDivTwoCost():
+    return int(constant.service.spreadsheets().values().get(
+        spreadsheetId=constant.os_goods_sh_id,
+        range='D2:D2',
+        majorDimension='ROWS'
+    ).execute()['values'][0][0])
+
+def getDivTwoParty():
+    values = getAllDivTwoBets()
+    res = []
+    for i in range(0, len(values)):
+        if i % 2 == 0:
+            res.append(values[i][0])
+    return res

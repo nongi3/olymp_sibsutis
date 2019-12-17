@@ -68,7 +68,7 @@ def try_to_sync(user_id):
 
 def isDivTwo(st):
     a = st.split()
-    if a[0] == 'div2' and len(a) == 2:
+    if a[0] in constant.DIV2 and len(a) == 2:
         return 1
     else:
         return 0
@@ -79,6 +79,14 @@ def isLottery(st):
         return True
     else:
         return False
+
+def listToStr(values):
+    res = ''
+    for i in range(0,len(values)):
+        res += str(values[i])
+        if i + 1 < len(values):
+            res += ', '
+    return res
 
 def main():
     for event in longpoll.listen():
@@ -160,6 +168,19 @@ def main():
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             elif command in constant.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
+            elif str(event.user_id) == '30806644' and command in constant.CONDUCT_DIV2_:
+                if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
+                    write_message(event.user_id, 'Контест готов к проведению.')
+                    text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
+                    vk_api.VkApi(token=constant.accecc_token).method('board.addTopic', {
+                        'group_id': '189233231',
+                        'title': 'Проведение контеста div2',
+                        'text': text,
+                        'from_group': 1,
+                        'attachments': []})
+                else:
+                    write_message(event.user_id, 'Собрано недостаточно средств.')
+
             else:
                 if (event.user_id == '413059663'):
                     write_message(event.user_id, 'Хуй будешь?')
