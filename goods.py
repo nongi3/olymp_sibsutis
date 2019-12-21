@@ -69,7 +69,7 @@ def tryToCancelDivTwoBet(handle):
     values = getAllDivTwoBets()
     for i in range(0, len(values)):
         if values[i][0] == handle:
-            table.afterSuccseccCanselingDiwTo(values[i][0], values[i + 1][0])
+            table.afterSuccseccCanselingDivTo(values[i][0], values[i + 1][0])
             values.pop(i + 1)
             values.pop(i)
             resetAllDivTwoBets()
