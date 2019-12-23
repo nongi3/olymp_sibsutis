@@ -9,8 +9,8 @@ import constant
 import cf_api
 
 def getAllUsersInfo():
-    values = constant.service.spreadsheets().values().get(
-        spreadsheetId=constant.spreadsheet_id,
+    values = secret_constant.service.spreadsheets().values().get(
+        spreadsheetId=secret_constant.spreadsheet_id,
         range='A2:F200',
         majorDimension='ROWS'
     ).execute()
@@ -25,8 +25,8 @@ def setAllUsersInfo(values):
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
 
-    constant.service.spreadsheets().values().batchUpdate(
-        spreadsheetId=constant.spreadsheet_id,
+    secret_constant.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constant.spreadsheet_id,
         body=buv
     ).execute()
 
@@ -95,8 +95,8 @@ def addNewUser(handle, vkId):
     setAllUsersInfo(values)
 
 def getHandles():
-    values = constant.service.spreadsheets().values().get(
-        spreadsheetId=constant.spreadsheet_id,
+    values = secret_constant.service.spreadsheets().values().get(
+        spreadsheetId=secret_constant.spreadsheet_id,
         range='A2:A200',
         majorDimension='COLUMNS'
     ).execute()
@@ -111,8 +111,8 @@ def changeHeader():
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
-    constant.service.spreadsheets().values().batchUpdate(
-        spreadsheetId=constant.spreadsheet_id,
+    secret_constant.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constant.spreadsheet_id,
         body=buv
     ).execute()
 
