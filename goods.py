@@ -6,12 +6,12 @@ import time
 import functools
 
 import constants
-import secret_constantss
+import secret_constants
 import cf_api
 import table
 
 def getAllDivTwoBets():
-    values = secret_constantss.service.spreadsheets().values().get(
+    values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
         range='D4:D200',
         majorDimension='ROWS'
