@@ -69,14 +69,14 @@ def try_to_sync(user_id):
 
 def isDivTwo(st):
     a = st.split()
-    if a[0] in constant.DIV2 and len(a) == 2:
+    if a[0] in constants.DIV2 and len(a) == 2:
         return 1
     else:
         return 0
 
 def isLottery(st):
     a = st.split()
-    if a[0] in constant.LOTTERY_:
+    if a[0] in constants.LOTTERY_:
         return True
     else:
         return False
@@ -94,9 +94,9 @@ def main():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             # print('abacaba', event.text.lower())
             command = event.text.lower()
-            if command in constant.SYNC_:
+            if command in constants.SYNC_:
                 try_to_sync(event.user_id)
-            elif command in constant.EXIT_COMMANDS_:
+            elif command in constants.EXIT_COMMANDS_:
                 exit()
             elif isLottery(command):
                 if str(event.user_id) == '30806644':
@@ -133,20 +133,20 @@ def main():
                     else:
                         write_message(event.user_id, 'Вы уже принимаете участие в розыгрыше!')
 
-            elif command in constant.bad_words:
+            elif command in constants.bad_words:
                 write_message(event.user_id, 'Сейчас обидно было :-(')
-            elif command in constant.balance:
+            elif command in constants.balance:
                 points = table.getPointsWithVkId(event.user_id)
                 if points < 0:
                     write_message(event.user_id, 'Не удалось получить данные о вашем счете!')
                 else:
                     write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
-            elif command in constant.GOOD_WORDS_:
+            elif command in constants.GOOD_WORDS_:
                 write_message(event.user_id, 'Какой вы клевый! Уважаю!')
-            elif command in constant.RESET_ONE_USER_POINTS_:
+            elif command in constants.RESET_ONE_USER_POINTS_:
                 table.resetPointsWithVkId(event.user_id)
                 write_message(event.user_id, 'Данные успешно обновлены!')
-            elif command in constant.RESET_ALL_USERS_POINTS_ and str(event.user_id) == '30806644':
+            elif command in constants.RESET_ALL_USERS_POINTS_ and str(event.user_id) == '30806644':
                 table.resetAllUsersInfo()
                 write_message(event.user_id, 'Таблица полностью обновлена!')
             elif isDivTwo(command) > 0:
@@ -165,11 +165,11 @@ def main():
                                                  'второго дивизиона успешно аннулирована.')
                 else:
                     write_message(event.user_id, 'У команды div2 нет такого параметра!')
-            elif command in constant.HELLO_:
+            elif command in constants.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
-            elif command in constant.WHO_RESPECT_THE_BEES:
+            elif command in constants.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
-            elif str(event.user_id) == '30806644' and command in constant.CONDUCT_DIV2_:
+            elif str(event.user_id) == '30806644' and command in constants.CONDUCT_DIV2_:
                 if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
                     write_message(event.user_id, 'Контест готов к проведению.')
                     text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
