@@ -5,13 +5,14 @@ import datetime
 import time
 import functools
 
-import constant
+import constants
+import secret_constantss
 import cf_api
 import table
 
 def getAllDivTwoBets():
-    values = secret_constant.service.spreadsheets().values().get(
-        spreadsheetId=secret_constant.os_goods_sh_id,
+    values = secret_constantss.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
         range='D4:D200',
         majorDimension='ROWS'
     ).execute()
@@ -31,8 +32,8 @@ def resetAllDivTwoBets():
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
 
-    secret_constant.service.spreadsheets().values().batchUpdate(
-        spreadsheetId=secret_constant.os_goods_sh_id,
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
         body=buv
     ).execute()
 
@@ -45,8 +46,8 @@ def setAllDivTwoBets(values):
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
 
-    secret_constant.service.spreadsheets().values().batchUpdate(
-        spreadsheetId=secret_constant.os_goods_sh_id,
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
         body=buv
     ).execute()
 
@@ -77,15 +78,15 @@ def tryToCancelDivTwoBet(handle):
             break
 
 def getSumOfDivTwoBets():
-    return int(secret_constant.service.spreadsheets().values().get(
-        spreadsheetId=secret_constant.os_goods_sh_id,
+    return int(secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
         range='D3:D3',
         majorDimension='ROWS'
     ).execute()['values'][0][0])
 
 def getDivTwoCost():
-    return int(secret_constant.service.spreadsheets().values().get(
-        spreadsheetId=secret_constant.os_goods_sh_id,
+    return int(secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
         range='D2:D2',
         majorDimension='ROWS'
     ).execute()['values'][0][0])

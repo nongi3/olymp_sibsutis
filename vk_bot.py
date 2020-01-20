@@ -6,11 +6,12 @@ from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import urllib.request
 
 import cf_api
-import constant
+import secret_constants
+import constants
 import table
 import goods
 
-vk_session = vk_api.VkApi(token=secret_constant.token)
+vk_session = vk_api.VkApi(token=secret_constants.token)
 
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
@@ -172,7 +173,7 @@ def main():
                 if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
                     write_message(event.user_id, 'Контест готов к проведению.')
                     text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
-                    vk_api.VkApi(token=secret_constant.accecc_token).method('board.addTopic', {
+                    vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
                         'group_id': '189233231',
                         'title': 'Проведение контеста div2',
                         'text': text,
