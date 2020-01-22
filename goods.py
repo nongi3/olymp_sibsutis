@@ -10,10 +10,43 @@ import secret_constants
 import cf_api
 import table
 
+def getAllDivOneBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='B4:B200',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' not in values:
+        return []
+    else:
+        return values['values']
+
 def getAllDivTwoBets():
     values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
         range='C4:C200',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' not in values:
+        return []
+    else:
+        return values['values']
+
+def getAllDivThreeBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='D4:D200',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' not in values:
+        return []
+    else:
+        return values['values']
+
+def getAllLectureBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='E4:E200',
         majorDimension='ROWS'
     ).execute()
     if 'values' not in values:
@@ -28,6 +61,20 @@ def resetAllDivTwoBets():
     data['values'] = []
     for i in range(100):
         data['values'].append([''])
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
+
+def setAllDivOneBets(values):
+    data = {}
+    data['range'] = 'B4:B200'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = values
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
@@ -64,7 +111,15 @@ def tryToAddBet(handle, lot_name, bet):
         return False
 
 def tryToAddDivOneBet(handle, bet):
-    return False
+    values = getAllDivOneBets()
+    for value in values:
+        if value[0] == handle:
+            return False
+    values.append([handle])
+    values.append([str(bet)])
+    setAllDivOneBets(values)
+    setSumOfDivOneBets(bet * len(values) / 2)
+    return True
 
 def tryToAddDivTwoBet(handle, bet):
     values = getAllDivTwoBets()
@@ -93,6 +148,19 @@ def tryToCancelDivTwoBet(handle):
             resetAllDivTwoBets()
             setAllDivTwoBets(values)
             break
+
+def setSumOfDivOneBets(new_sum):
+    data = {}
+    data['range'] = 'B3:B3'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = [[new_sum]]
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
 
 def getSumOfDivTwoBets():
     values = secret_constants.service.spreadsheets().values().get(
