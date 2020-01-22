@@ -35,3 +35,11 @@ CONDUCT_DIV2_ = ['провести див2', 'conduct div2']
 BET_COMMANDS_ = ['bet', 'ставка']
 
 CORRECT_LOTS_ = ['div1', 'div2', 'div3', 'lecture', 'див1', 'див2', 'див3', 'лекция']
+
+DIV_ONE_ = ['div1', 'див1']
+
+DIV_TWO_ = ['div2', 'див2']
+
+DIV_THREE_ = ['div3', 'див3']
+
+LECTURE_WORDS_ = ['lecture', 'лекция']

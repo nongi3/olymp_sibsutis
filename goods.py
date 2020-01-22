@@ -51,19 +51,37 @@ def setAllDivTwoBets(values):
         body=buv
     ).execute()
 
+def tryToAddBet(handle, lot_name, bet):
+    if lot_name in constants.DIV_ONE_:
+        return tryToAddDivOneBet(handle, bet)
+    elif lot_name in constants.DIV_TWO_:
+        return tryToAddDivTwoBet(handle, bet)
+    elif lot_name in constants.DIV_THREE_:
+        return tryToAddDivThreeBet(handle, bet)
+    elif lot_name in constants.LECTURE_WORDS_:
+        return tryToAddLectureBet(handle, bet)
+    else:
+        return False
+
+def tryToAddDivOneBet(handle, bet):
+    return False
+
 def tryToAddDivTwoBet(handle, bet):
     values = getAllDivTwoBets()
-    is_find = False
     for value in values:
-        if is_find:
-            value[0] = bet
-            setAllDivTwoBets(values)
-            return
         if value[0] == handle:
-            is_find = True
+            return False
     values.append([handle])
     values.append([str(bet)])
     setAllDivTwoBets(values)
+    setSumOfDivTwoBets(bet * len(values) / 2)
+    return True
+
+def tryToAddDivThreeBet(handle, bet):
+    return False
+
+def tryToAddLectureBet(handle, bet):
+    return False
 
 def tryToCancelDivTwoBet(handle):
     values = getAllDivTwoBets()
@@ -77,11 +95,28 @@ def tryToCancelDivTwoBet(handle):
             break
 
 def getSumOfDivTwoBets():
-    return int(secret_constants.service.spreadsheets().values().get(
+    values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
         range='C3:C3',
         majorDimension='ROWS'
-    ).execute()['values'][0][0])
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return int(values['values'][0][0])
+    else:
+        return 0
+
+def setSumOfDivTwoBets(new_sum):
+    data = {}
+    data['range'] = 'C3:C3'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = [[new_sum]]
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
 
 def getDivTwoCost():
     return int(secret_constants.service.spreadsheets().values().get(

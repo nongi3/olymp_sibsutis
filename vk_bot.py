@@ -157,7 +157,8 @@ def main():
                 if isCorrectLot(command) == 0:
                     write_message(event.user_id, 'Неверное именование лота! Проверить наличие лотов можно в группе.')
                     continue
-                current_price = int(price.getPriceWithName(command[(len(command.split()[0]) + 1):]))
+                lot_name = command[(len(command.split()[0]) + 1):]
+                current_price = int(price.getPriceWithName(lot_name))
                 if current_price < 0:
                     write_message(event.user_id, 'Не удается определить цену товара. Обратитесь за помощью к '
                                                  'администраторам группу!')
@@ -165,9 +166,11 @@ def main():
                 if table.getPointsWithVkId(event.user_id) < current_price:
                     write_message(event.user_id, 'Недостаточно средств для совершения операции!')
                     continue
-                table.setSpentPointsWithVkId(event.user_id, current_price)
-                goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), current_price)
-                write_message(event.user_id, 'Лот успешно выкуплен!')
+                if goods.tryToAddBet(table.getHandleWithVkId(event.user_id), lot_name, current_price) == True:
+                    table.setSpentPointsWithVkId(event.user_id, current_price)
+                    write_message(event.user_id, 'Лот успешно выкуплен!')
+                else:
+                    write_message(event.user_id, 'Произошла ошибка при попытке записать данные в таблицу!')
             elif command in constants.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
             elif str(event.user_id) == '30806644' and command in constants.CONDUCT_DIV2_:
