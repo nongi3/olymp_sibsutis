@@ -68,13 +68,6 @@ def try_to_sync(user_id):
             return 0
     return 1
 
-def isDivTwo(st):
-    a = st.split()
-    if a[0] in constants.DIV2 and len(a) == 2:
-        return 1
-    else:
-        return 0
-
 def isLottery(st):
     a = st.split()
     if a[0] in constants.LOTTERY_:
@@ -158,22 +151,6 @@ def main():
             elif command in constants.RESET_ALL_USERS_POINTS_ and str(event.user_id) == '30806644':
                 table.resetAllUsersInfo()
                 write_message(event.user_id, 'Таблица полностью обновлена!')
-            elif isDivTwo(command) > 0:
-                a = command.split()
-                if a[1].isdigit():
-                    if table.isEnoughtForBet(event.user_id, a[1]) < 1:
-                        write_message(event.user_id, 'У вас слишком мало баллов или '
-                                                     'ваша ставка слишком маленькая (минимальная ставка 10 sp).')
-                        continue
-                    table.setSpentPointsWithVkId(event.user_id, a[1])
-                    goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), a[1])
-                    write_message(event.user_id, 'Ваша ставка принята!')
-                elif a[1].lower() == 'cancel':
-                    goods.tryToCancelDivTwoBet(table.getHandleWithVkId(event.user_id))
-                    write_message(event.user_id, 'Ваша ставка на проведение контеста '
-                                                 'второго дивизиона успешно аннулирована.')
-                else:
-                    write_message(event.user_id, 'У команды div2 нет такого параметра!')
             elif command in constants.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             elif isBet(command) > 0:

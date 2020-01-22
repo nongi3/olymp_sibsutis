@@ -20,8 +20,6 @@ RESET_ONE_USER_POINTS_ = ['reset_me', 'обнови меня']
 
 RESET_ALL_USERS_POINTS_ = ['/upd', 'reset', 'обнови таблицу']
 
-DIV2 = ['див2', 'div2']
-
 SYNC_ = ['синхра', 'sync', 'add']
 
 EXIT_COMMANDS_ = ['exit']

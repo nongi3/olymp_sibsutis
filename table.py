@@ -68,13 +68,6 @@ def resetPointsWithVkId(vkId):
             setAllUsersInfo(values)
             break
 
-def isEnoughtForBet(vkId, bet):
-    values = getAllUsersInfo()
-    for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
-            return int(bet) >= 10 and int(value[constants.TABLE_COLUMN_ALL_POINTS_]) >= int(bet)
-    return 0
-
 def getHandleWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
