@@ -131,3 +131,10 @@ def resetAllUsersInfo():
                                                         int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
                                                         int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
     setAllUsersInfo(values)
+
+def isUserAlreadyExist(vkId):
+    values = getAllUsersInfo()
+    for value in values:
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            return True
+    return False

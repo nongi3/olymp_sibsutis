@@ -59,7 +59,7 @@ def try_to_sync(user_id):
                                        'кодфорсе закрыт')
                 return 1
             vk_id_from_cf = res['result'][0]['vkId']
-            if str(user_id) == str(vk_id_from_cf):
+            if str(user_id) == str(vk_id_from_cf) and table.isUserAlreadyExist(user_id) == False:
                 table.addNewUser(handle, user_id)
                 write_message(user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
             else:
@@ -93,7 +93,6 @@ def isCorrectLot(st):
 def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
-            # print('abacaba', event.text.lower())
             command = event.text.lower()
             if command in constants.SYNC_:
                 try_to_sync(event.user_id)

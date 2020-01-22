@@ -112,6 +112,20 @@ def setAllDivThreeBets(values):
         body=buv
     ).execute()
 
+def setAllLectureBets(values):
+    data = {}
+    data['range'] = 'E4:E200'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = values
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
+
 def tryToAddBet(handle, lot_name, bet):
     if lot_name in constants.DIV_ONE_:
         return tryToAddDivOneBet(handle, bet)
@@ -158,7 +172,15 @@ def tryToAddDivThreeBet(handle, bet):
     return True
 
 def tryToAddLectureBet(handle, bet):
-    return False
+    values = getAllLectureBets()
+    for value in values:
+        if value[0] == handle:
+            return False
+    values.append([handle])
+    values.append([str(bet)])
+    setAllLectureBets(values)
+    setSumOfLectureBets(bet * len(values) / 2)
+    return True
 
 def tryToCancelDivTwoBet(handle):
     values = getAllDivTwoBets()
@@ -211,6 +233,19 @@ def setSumOfDivTwoBets(new_sum):
 def setSumOfDivThreeBets(new_sum):
     data = {}
     data['range'] = 'D3:D3'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = [[new_sum]]
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
+
+def setSumOfLectureBets(new_sum):
+    data = {}
+    data['range'] = 'E3:E3'
     data['majorDimension'] = 'ROWS'
     data['values'] = [[new_sum]]
     buv = {}
