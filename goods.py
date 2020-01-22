@@ -13,7 +13,7 @@ import table
 def getAllDivTwoBets():
     values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
-        range='D4:D200',
+        range='C4:C200',
         majorDimension='ROWS'
     ).execute()
     if 'values' not in values:
@@ -23,7 +23,7 @@ def getAllDivTwoBets():
 
 def resetAllDivTwoBets():
     data = {}
-    data['range'] = 'D4:D200'
+    data['range'] = 'C4:C200'
     data['majorDimension'] = 'ROWS'
     data['values'] = []
     for i in range(100):
@@ -39,7 +39,7 @@ def resetAllDivTwoBets():
 
 def setAllDivTwoBets(values):
     data = {}
-    data['range'] = 'D4:D200'
+    data['range'] = 'C4:C200'
     data['majorDimension'] = 'ROWS'
     data['values'] = values
     buv = {}
@@ -56,7 +56,7 @@ def tryToAddDivTwoBet(handle, bet):
     is_find = False
     for value in values:
         if is_find:
-            value[0] = str(int(value[0]) + int(bet))
+            value[0] = bet
             setAllDivTwoBets(values)
             return
         if value[0] == handle:
@@ -64,7 +64,6 @@ def tryToAddDivTwoBet(handle, bet):
     values.append([handle])
     values.append([str(bet)])
     setAllDivTwoBets(values)
-    return
 
 def tryToCancelDivTwoBet(handle):
     values = getAllDivTwoBets()
@@ -80,14 +79,14 @@ def tryToCancelDivTwoBet(handle):
 def getSumOfDivTwoBets():
     return int(secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
-        range='D3:D3',
+        range='C3:C3',
         majorDimension='ROWS'
     ).execute()['values'][0][0])
 
 def getDivTwoCost():
     return int(secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
-        range='D2:D2',
+        range='C2:C2',
         majorDimension='ROWS'
     ).execute()['values'][0][0])
 

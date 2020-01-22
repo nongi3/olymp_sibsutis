@@ -10,6 +10,7 @@ import secret_constants
 import constants
 import table
 import goods
+import price
 
 vk_session = vk_api.VkApi(token=secret_constants.token)
 
@@ -89,6 +90,13 @@ def listToStr(values):
             res += ', '
     return res
 
+def isBet(st):
+    a = st.split()
+    return a[0] in constants.BET_COMMANDS_
+
+def isCorrectLot(st):
+    return st[(len(st.split()[0]) + 1):] in constants.CORRECT_LOTS_
+
 def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
@@ -97,6 +105,7 @@ def main():
             if command in constants.SYNC_:
                 try_to_sync(event.user_id)
             elif command in constants.EXIT_COMMANDS_:
+                write_message(event.user_id, 'Пока :-D')
                 exit()
             elif isLottery(command):
                 if str(event.user_id) == '30806644':
@@ -167,6 +176,21 @@ def main():
                     write_message(event.user_id, 'У команды div2 нет такого параметра!')
             elif command in constants.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
+            elif isBet(command) > 0:
+                if isCorrectLot(command) == 0:
+                    write_message(event.user_id, 'Неверное именование лота! Проверить наличие лотов можно в группе.')
+                    continue
+                current_price = int(price.getPriceWithName(command[(len(command.split()[0]) + 1):]))
+                if current_price < 0:
+                    write_message(event.user_id, 'Не удается определить цену товара. Обратитесь за помощью к '
+                                                 'администраторам группу!')
+                    continue
+                if table.getPointsWithVkId(event.user_id) < current_price:
+                    write_message(event.user_id, 'Недостаточно средств для совершения операции!')
+                    continue
+                table.setSpentPointsWithVkId(event.user_id, current_price)
+                goods.tryToAddDivTwoBet(table.getHandleWithVkId(event.user_id), current_price)
+                write_message(event.user_id, 'Лот успешно выкуплен!')
             elif command in constants.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
             elif str(event.user_id) == '30806644' and command in constants.CONDUCT_DIV2_:

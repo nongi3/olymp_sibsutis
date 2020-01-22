@@ -21,7 +21,7 @@ def setAllUsersInfo(values):
     data = {}
     data['range'] = 'A2:F200'
     data['majorDimension'] = 'ROWS'
-    data['values'] = sorted(values, key=lambda value: int(value[TABLE_COLUMN_ALL_POINTS_]), reverse=True)
+    data['values'] = sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_ALL_POINTS_]), reverse=True)
     buv = {}
     buv['value_input_option'] = 'USER_ENTERED'
     buv['data'] = data
@@ -34,51 +34,52 @@ def setAllUsersInfo(values):
 def getPointsWithHandle(handle):
     values = getAllUsersInfo()
     for value in values:
-        if value[TABLE_COLUMN_HANDLE_] == handle:
-            return value[TABLE_COLUMN_ALL_POINTS_]
+        if value[constants.TABLE_COLUMN_HANDLE_] == handle:
+            return value[constants.TABLE_COLUMN_ALL_POINTS_]
     return -1
 
 def getPointsWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[TABLE_COLUMN_VKID_]) == str(vkId):
-            return int(value[TABLE_COLUMN_ALL_POINTS_])
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            return int(value[constants.TABLE_COLUMN_ALL_POINTS_])
     return -1
 
 def setSpentPointsWithVkId(vkId, points):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[TABLE_COLUMN_VKID_]) == str(vkId):
-            value[TABLE_COLUMN_SPENT_POINTS_] = str(int(value[TABLE_COLUMN_SPENT_POINTS_]) + int(points))
-            value[TABLE_COLUMN_ALL_POINTS_] = str(int(value[TABLE_COLUMN_CF_POINTS_]) +
-                                                  int(value[TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                  int(value[TABLE_COLUMN_SPENT_POINTS_]))
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            value[constants.TABLE_COLUMN_SPENT_POINTS_] = str(int(value[constants.TABLE_COLUMN_SPENT_POINTS_]) +
+                                                              int(points))
+            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
+                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
+                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
             setAllUsersInfo(values)
             break
 
 def resetPointsWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[TABLE_COLUMN_VKID_]) == str(vkId):
-            value[TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[TABLE_COLUMN_HANDLE_])
-            value[TABLE_COLUMN_ALL_POINTS_] = str(int(value[TABLE_COLUMN_CF_POINTS_]) +
-                                                  int(value[TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                  int(value[TABLE_COLUMN_SPENT_POINTS_]))
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            value[constants.TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
+            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
+                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
+                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
             setAllUsersInfo(values)
             break
 
 def isEnoughtForBet(vkId, bet):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[TABLE_COLUMN_VKID_]) == str(vkId):
-            return int(bet) >= 10 and int(value[TABLE_COLUMN_ALL_POINTS_]) >= int(bet)
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            return int(bet) >= 10 and int(value[constants.TABLE_COLUMN_ALL_POINTS_]) >= int(bet)
     return 0
 
 def getHandleWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[TABLE_COLUMN_VKID_]) == str(vkId):
-            return value[TABLE_COLUMN_HANDLE_]
+        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+            return value[constants.TABLE_COLUMN_HANDLE_]
     return "None"
 
 def addNewUser(handle, vkId):
@@ -101,7 +102,7 @@ def getHandles():
         range='A2:A200',
         majorDimension='COLUMNS'
     ).execute()
-    return values['values'][TABLE_COLUMN_HANDLE_]
+    return values['values'][constants.TABLE_COLUMN_HANDLE_]
 
 def changeHeader():
     data = {}
@@ -120,19 +121,20 @@ def changeHeader():
 def afterSuccseccCanselingDivTo(handle, sp):
     values = getAllUsersInfo()
     for value in values:
-        if value[TABLE_COLUMN_HANDLE_] == handle:
-            value[TABLE_COLUMN_SPENT_POINTS_] = str(int(value[TABLE_COLUMN_SPENT_POINTS_]) - int(sp))
-            value[TABLE_COLUMN_ALL_POINTS_] = str(int(value[TABLE_COLUMN_CF_POINTS_]) +
-                                                  int(value[TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                  int(value[TABLE_COLUMN_SPENT_POINTS_]))
+        if value[constants.TABLE_COLUMN_HANDLE_] == handle:
+            value[constants.TABLE_COLUMN_SPENT_POINTS_] = str(int(value[constants.TABLE_COLUMN_SPENT_POINTS_]) -
+                                                              int(sp))
+            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
+                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
+                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
             setAllUsersInfo(values)
             break
 
 def resetAllUsersInfo():
     values = getAllUsersInfo()
     for value in values:
-        value[TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[TABLE_COLUMN_HANDLE_])
-        value[TABLE_COLUMN_ALL_POINTS_] = str(int(value[TABLE_COLUMN_CF_POINTS_]) +
-                                              int(value[TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                              int(value[TABLE_COLUMN_SPENT_POINTS_]))
+        value[constants.TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
+        value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
+                                                        int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
+                                                        int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
     setAllUsersInfo(values)
