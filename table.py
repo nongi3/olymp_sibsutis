@@ -82,7 +82,7 @@ def addNewUser(handle, vkId):
     tmp.append(vkId)
     codeforces_points = cf_api.findCodeforcesPoints(handle)
     additional_points = 0
-    tmp.append(str(codeforces_points + additional_points))
+    tmp.append(str(codeforces_points))
     tmp.append(str(codeforces_points))
     tmp.append(str(additional_points))
     tmp.append(str(0))

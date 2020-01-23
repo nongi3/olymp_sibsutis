@@ -90,6 +90,9 @@ def isBet(st):
 def isCorrectLot(st):
     return st[(len(st.split()[0]) + 1):] in constants.CORRECT_LOTS_
 
+def isConduct(st):
+    return st.split()[0] in constants.CONDUCT_
+
 def main():
     for event in longpoll.listen():
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
@@ -172,19 +175,35 @@ def main():
                     write_message(event.user_id, 'Произошла ошибка при попытке записать данные в таблицу!')
             elif command in constants.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
-            elif str(event.user_id) == '30806644' and command in constants.CONDUCT_DIV2_:
-                if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
-                    write_message(event.user_id, 'Контест готов к проведению.')
-                    text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
-                    vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
-                        'group_id': '189233231',
-                        'title': 'Проведение контеста div2',
-                        'text': text,
-                        'from_group': 1,
-                        'attachments': []})
-                else:
-                    write_message(event.user_id, 'Собрано недостаточно средств.')
-
+            elif command in constants.PING_:
+                write_message(event.user_id, 'Автор уведомлен о сборе')
+            elif str(event.user_id) == '30806644':
+                if isConduct(command) == True:
+                    if isCorrectLot(command) == False:
+                        write_message(event.user_id, 'Неверное именование лота! '
+                                                     'Проверить наличие лотов можно в группе.')
+                        continue
+                    lot_name = command[(len(command.split()[0]) + 1):]
+                    current_price = int(goods.getPrice(lot_name))
+                    if current_price < 0:
+                        write_message(event.user_id, 'Не удается определить цену товара. Обратитесь за помощью к '
+                                                     'администраторам группу!')
+                        continue
+                    if current_price > goods.getSumOfBets(lot_name):
+                        write_message(event.user_id, 'Собрано недостаточно средств для покупки лота!')
+                        continue
+                # and command in constants.CONDUCT_DIV2_:
+                # if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
+                #     write_message(event.user_id, 'Контест готов к проведению.')
+                #     text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
+                #     vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
+                #         'group_id': '189233231',
+                #         'title': 'Проведение контеста div2',
+                #         'text': text,
+                #         'from_group': 1,
+                #         'attachments': []})
+                # else:
+                #     write_message(event.user_id, 'Собрано недостаточно средств.')
             else:
                 if (event.user_id == '413059663'):
                     write_message(event.user_id, 'Хуй будешь?')

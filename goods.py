@@ -193,6 +193,29 @@ def tryToCancelDivTwoBet(handle):
             setAllDivTwoBets(values)
             break
 
+def getSumOfBets(lot_name):
+    if lot_name in constants.DIV_ONE_:
+        return getSumOfDivOneBets()
+    elif lot_name in constants.DIV_TWO_:
+        return getSumOfDivTwoBets()
+    elif lot_name in constants.DIV_THREE_:
+        return getSumOfDivThreeBets()
+    elif lot_name in constants.LECTURE_WORDS_:
+        return getSumOfLectureBets()
+    else:
+        return -1
+
+def getSumOfDivOneBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='B3:B3',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return int(values['values'][0][0])
+    else:
+        return 0
+
 def setSumOfDivOneBets(new_sum):
     data = {}
     data['range'] = 'B3:B3'
@@ -230,6 +253,28 @@ def setSumOfDivTwoBets(new_sum):
         body=buv
     ).execute()
 
+def getSumOfDivThreeBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='D3:D3',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return int(values['values'][0][0])
+    else:
+        return 0
+
+def getSumOfLectureBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='E3:E3',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return int(values['values'][0][0])
+    else:
+        return 0
+
 def setSumOfDivThreeBets(new_sum):
     data = {}
     data['range'] = 'D3:D3'
@@ -256,12 +301,49 @@ def setSumOfLectureBets(new_sum):
         body=buv
     ).execute()
 
+def getDivOneCost():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='B2:B2',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return values['values'][0][0]
+    else:
+        return -1
+
 def getDivTwoCost():
-    return int(secret_constants.service.spreadsheets().values().get(
+    values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.os_goods_sh_id,
         range='C2:C2',
         majorDimension='ROWS'
-    ).execute()['values'][0][0])
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return values['values'][0][0]
+    else:
+        return -1
+
+def getDivThreeCost():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='D2:D2',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return values['values'][0][0]
+    else:
+        return -1
+
+def getLectureCost():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='E2:E2',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return values['values'][0][0]
+    else:
+        return -1
 
 def getDivTwoParty():
     values = getAllDivTwoBets()
@@ -270,3 +352,15 @@ def getDivTwoParty():
         if i % 2 == 0:
             res.append(values[i][0])
     return res
+
+def getPrice(lot_name):
+    if lot_name in constants.DIV_ONE_:
+        return getDivOneCost()
+    elif lot_name in constants.DIV_TWO_:
+        return getDivTwoCost()
+    elif lot_name in constants.DIV_THREE_:
+        return getDivThreeCost()
+    elif lot_name in constants.LECTURE_WORDS_:
+        return getLectureCost()
+    else:
+        return -1
