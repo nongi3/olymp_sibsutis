@@ -193,6 +193,33 @@ def tryToCancelDivTwoBet(handle):
             setAllDivTwoBets(values)
             break
 
+def tryToResetBets(lot_name):
+    data = {}
+    data['range'] = constants.GOODS_COLUMN[lot_name] + '4:' + constants.GOODS_COLUMN[lot_name] + '200'
+    data['majorDimension'] = 'ROWS'
+    data['values'] = []
+    for i in range(100):
+        data['values'].append([''])
+    buv = {}
+    buv['value_input_option'] = 'USER_ENTERED'
+    buv['data'] = data
+
+    secret_constants.service.spreadsheets().values().batchUpdate(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        body=buv
+    ).execute()
+    setSumOfBets(lot_name)
+
+def setSumOfBets(lot_name):
+    if lot_name in constants.DIV_ONE_:
+        setSumOfDivOneBets()
+    elif lot_name in constants.DIV_TWO_:
+        setSumOfDivTwoBets()
+    elif lot_name in constants.DIV_THREE_:
+        setSumOfDivThreeBets()
+    elif lot_name in constants.LECTURE_WORDS_:
+        setSumOfLectureBets()
+
 def getSumOfBets(lot_name):
     if lot_name in constants.DIV_ONE_:
         return getSumOfDivOneBets()
@@ -264,17 +291,6 @@ def getSumOfDivThreeBets():
     else:
         return 0
 
-def getSumOfLectureBets():
-    values = secret_constants.service.spreadsheets().values().get(
-        spreadsheetId=secret_constants.os_goods_sh_id,
-        range='E3:E3',
-        majorDimension='ROWS'
-    ).execute()
-    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
-        return int(values['values'][0][0])
-    else:
-        return 0
-
 def setSumOfDivThreeBets(new_sum):
     data = {}
     data['range'] = 'D3:D3'
@@ -287,6 +303,17 @@ def setSumOfDivThreeBets(new_sum):
         spreadsheetId=secret_constants.os_goods_sh_id,
         body=buv
     ).execute()
+
+def getSumOfLectureBets():
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range='E3:E3',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' in values and len(values['values']) > 0 and len(values['values'][0]) > 0:
+        return int(values['values'][0][0])
+    else:
+        return 0
 
 def setSumOfLectureBets(new_sum):
     data = {}
@@ -345,8 +372,19 @@ def getLectureCost():
     else:
         return -1
 
-def getDivTwoParty():
-    values = getAllDivTwoBets()
+def getAllBets(lot_name):
+    values = secret_constants.service.spreadsheets().values().get(
+        spreadsheetId=secret_constants.os_goods_sh_id,
+        range=constants.GOODS_COLUMN[lot_name] + '4:' + constants.GOODS_COLUMN[lot_name] + '200',
+        majorDimension='ROWS'
+    ).execute()
+    if 'values' not in values:
+        return []
+    else:
+        return values['values']
+
+def getParty(lot_name):
+    values = getAllBets(lot_name)
     res = []
     for i in range(0, len(values)):
         if i % 2 == 0:

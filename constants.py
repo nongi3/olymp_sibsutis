@@ -1,14 +1,18 @@
 # table constants
-
 TABLE_COLUMN_HANDLE_ = 0
 TABLE_COLUMN_VKID_ = 1
 TABLE_COLUMN_ALL_POINTS_ = 2
 TABLE_COLUMN_CF_POINTS_ = 3
 TABLE_COLUMN_ADDITIONAL_POINTS_ = 4
 TABLE_COLUMN_SPENT_POINTS_ = 5
-
 # end of table constants
 
+# goods constants
+GOODS_COLUMN = {'div1': 'B', 'див1': 'B',
+                'div2': 'C', 'див2': 'C',
+                'div3': 'D', 'див3': 'D',
+                'lecture': 'E', 'лекция': 'E'}
+# end of goods constants
 
 bad_words = ['твердохлеб', 'петуч', 'лох', 'кока', 'соси', 'козел программный']
 

@@ -24,6 +24,16 @@ def write_message(user_id, msg):
 is_lottery_start = False
 lottery_list = []
 
+def makeTopic(lot_name):
+    write_message(event.user_id, 'Лот успешно зарегистрирован.')
+    text = 'В следующем лоте - ' + lot_name + ' - принимают участие: ' + listToStr(goods.getParty(lot_name))
+    vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
+        'group_id': '189233231',
+        'title': 'Проведение контеста div2',
+        'text': text,
+        'from_group': 1,
+        'attachments': []})
+
 def tryToLottery(number):
     global lottery_list
     random.shuffle(lottery_list)
@@ -192,6 +202,11 @@ def main():
                     if current_price > goods.getSumOfBets(lot_name):
                         write_message(event.user_id, 'Собрано недостаточно средств для покупки лота!')
                         continue
+                    goods.tryToResetBets(lot_name)
+                    makeTopic(lot_name)
+                    # TODO
+                    # сообщение в обсуждениях паблика
+                    # сообщение участникам
                 # and command in constants.CONDUCT_DIV2_:
                 # if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
                 #     write_message(event.user_id, 'Контест готов к проведению.')
