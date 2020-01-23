@@ -208,17 +208,17 @@ def tryToResetBets(lot_name):
         spreadsheetId=secret_constants.os_goods_sh_id,
         body=buv
     ).execute()
-    setSumOfBets(lot_name)
+    setSumOfBets(lot_name, 0)
 
-def setSumOfBets(lot_name):
+def setSumOfBets(lot_name, new_sum):
     if lot_name in constants.DIV_ONE_:
-        setSumOfDivOneBets()
+        setSumOfDivOneBets(new_sum)
     elif lot_name in constants.DIV_TWO_:
-        setSumOfDivTwoBets()
+        setSumOfDivTwoBets(new_sum)
     elif lot_name in constants.DIV_THREE_:
-        setSumOfDivThreeBets()
+        setSumOfDivThreeBets(new_sum)
     elif lot_name in constants.LECTURE_WORDS_:
-        setSumOfLectureBets()
+        setSumOfLectureBets(new_sum)
 
 def getSumOfBets(lot_name):
     if lot_name in constants.DIV_ONE_:

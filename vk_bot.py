@@ -25,11 +25,10 @@ is_lottery_start = False
 lottery_list = []
 
 def makeTopic(lot_name):
-    write_message(event.user_id, 'Лот успешно зарегистрирован.')
     text = 'В следующем лоте - ' + lot_name + ' - принимают участие: ' + listToStr(goods.getParty(lot_name))
     vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
         'group_id': '189233231',
-        'title': 'Проведение контеста div2',
+        'title': 'Проведение лота: ' + lot_name,
         'text': text,
         'from_group': 1,
         'attachments': []})
@@ -204,8 +203,8 @@ def main():
                         continue
                     goods.tryToResetBets(lot_name)
                     makeTopic(lot_name)
+                    write_message(event.user_id, 'Лот успешно зарегистрирован.')
                     # TODO
-                    # сообщение в обсуждениях паблика
                     # сообщение участникам
                 # and command in constants.CONDUCT_DIV2_:
                 # if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
