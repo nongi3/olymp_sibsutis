@@ -10,22 +10,6 @@ import constants
 
 handles_ = []
 
-def cmp(a, b):
-    if a[0] < b[0]:
-        return -1
-    elif a[0] > b[0]:
-        return 1
-    else:
-        return 0
-
-def add_new_handle(new_handle):
-    global handles_
-    handles_ = table.getHandles()
-    if new_handle not in handles_:
-        handles_.append(new_handle)
-        changeCodeforcesInfo()
-
-
 def findCodeforcesPoints(handle):
     request_url = 'http://codeforces.com/api/user.status?handle=' + handle
     response = urllib.request.urlopen(request_url)
@@ -41,10 +25,6 @@ def findCodeforcesPoints(handle):
         if 'rating' not in i['problem']:
             continue
         rating = i['problem']['rating']
-        ct = datetime.datetime.now()
-        unixtime = time.mktime(ct.timetuple())
-        tm = unixtime - i['creationTimeSeconds']
-        contest_name = i['problem']['name']
         if i['verdict'] == 'OK':
             if contestId < 10000:
                 if rating not in ans:
@@ -62,3 +42,21 @@ def getVkIdFromCodeforces(handle):
     response = urllib.request.urlopen(request_url)
     res = json.loads(response.read())
     return res['result'][0]['vkId']
+
+def getTimeOfLastSubmissionWithHandle(handle):
+    try:
+        request_url = 'http://codeforces.com/api/user.status?handle=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return 0
+    if 'result' not in res:
+        return 0
+    for task in res['result']:
+        if 'verdict' not in task:
+            continue
+        if task['verdict'] == 'OK':
+            return task['creationTimeSeconds']
+    return 0
+
+

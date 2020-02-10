@@ -138,3 +138,15 @@ def isUserAlreadyExist(vkId):
         if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
             return True
     return False
+
+def getAllActiveUsers(number_of_days):
+    active_users = []
+    users = getAllUsersInfo()
+    for user in users:
+        last_submission_time = cf_api.getTimeOfLastSubmissionWithHandle(user[constants.TABLE_COLUMN_HANDLE_])
+        unixtime = time.mktime(datetime.datetime.now().timetuple())
+        if unixtime - number_of_days * 86400 <= last_submission_time:
+            active_users.append(user)
+    return active_users
+
+print(len(getAllActiveUsers(10)))
