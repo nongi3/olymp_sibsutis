@@ -24,6 +24,8 @@ def write_message(user_id, msg):
 is_lottery_start = False
 lottery_list = []
 
+sync_list = []
+
 def makeTopic(lot_name):
     text = 'В следующем лоте - ' + lot_name + ' - принимают участие: ' + listToStr(goods.getParty(lot_name))
     vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
@@ -44,38 +46,6 @@ def tryToLottery(number):
         for i in range(number):
             res.append(lottery_list[i])
     return res
-
-def try_to_sync(user_id):
-    write_message(user_id, 'Введите ваш хэндл на codeforces для '
-                           'добавления вас в таблицу и синхронизации с аккаунтом vk')
-    for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
-            handle = event.text.lower()
-            try:
-                request_url = 'http://codeforces.com/api/user.info?handles=' + handle
-                response = urllib.request.urlopen(request_url)
-                res = json.loads(response.read())
-            except Exception:
-                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                       'кодфорсе закрыт')
-                return 1
-            if 'result' not in res:
-                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                       'кодфорсе закрыт')
-                return 1
-            if 'vkId' not in res['result'][0]:
-                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                       'кодфорсе закрыт')
-                return 1
-            vk_id_from_cf = res['result'][0]['vkId']
-            if str(user_id) == str(vk_id_from_cf) and table.isUserAlreadyExist(user_id) == False:
-                table.addNewUser(handle, user_id)
-                write_message(user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
-            else:
-                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                             'кодфорсе закрыт')
-            return 0
-    return 1
 
 def isLottery(st):
     a = st.split()
@@ -104,10 +74,43 @@ def isConduct(st):
 
 def main():
     for event in longpoll.listen():
+        if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and event.user_id in sync_list:
+            handle = event.text.lower()
+            try:
+                request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+                response = urllib.request.urlopen(request_url)
+                res = json.loads(response.read())
+            except Exception:
+                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
+                                       'кодфорсе закрыт')
+            if 'result' not in res:
+                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                continue
+            if len(res['result']) < 1:
+                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                continue
+            if 'vkId' not in res['result'][0]:
+                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                continue
+            vk_id_from_cf = res['result'][0]['vkId']
+            if str(event.user_id) != str(vk_id_from_cf)
+                write_message(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
+                continue
+            if table.isUserAlreadyExist(user_id) == True:
+                write_message(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
+                continue
+            table.addNewUser(handle, user_id)
+            write_message(user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             command = event.text.lower()
             if command in constants.SYNC_:
-                try_to_sync(event.user_id)
+                if event.user_id in sync_list:
+                    write_message(event.user_id, 'Жду с нетерпением вашего хэндла, чтобы подтвердить вступление'
+                                                 ' в наши ряды')
+                    continue
+                write_message(event.user_id, 'Введите ваш хэндл на codeforces для '
+                                       'добавления вас в таблицу и синхронизации с аккаунтом vk')
+                sync_list.append(event.user_id)
             elif command in constants.EXIT_COMMANDS_:
                 write_message(event.user_id, 'Пока :-D')
                 exit()
@@ -159,9 +162,6 @@ def main():
             elif command in constants.RESET_ONE_USER_POINTS_:
                 table.resetPointsWithVkId(event.user_id)
                 write_message(event.user_id, 'Данные успешно обновлены!')
-            elif command in constants.RESET_ALL_USERS_POINTS_ and str(event.user_id) == '30806644':
-                table.resetAllUsersInfo()
-                write_message(event.user_id, 'Таблица полностью обновлена!')
             elif command in constants.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             elif isBet(command) > 0:
@@ -204,20 +204,10 @@ def main():
                     goods.tryToResetBets(lot_name)
                     makeTopic(lot_name)
                     write_message(event.user_id, 'Лот успешно зарегистрирован.')
-                    # TODO
-                    # сообщение участникам
-                # and command in constants.CONDUCT_DIV2_:
-                # if goods.getSumOfDivTwoBets() >= goods.getDivTwoCost():
-                #     write_message(event.user_id, 'Контест готов к проведению.')
-                #     text = 'В следующем контесте принимают участие: ' + listToStr(goods.getDivTwoParty())
-                #     vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
-                #         'group_id': '189233231',
-                #         'title': 'Проведение контеста div2',
-                #         'text': text,
-                #         'from_group': 1,
-                #         'attachments': []})
-                # else:
-                #     write_message(event.user_id, 'Собрано недостаточно средств.')
+                elif command in constants.RESET_ALL_USERS_POINTS_:
+                    write_message(event.user_id, 'Обновление таблицы может занять некоторое время!')
+                    table.resetAllUsersInfo()
+                    write_message(event.user_id, 'Таблица полностью обновлена!')
             else:
                 if (event.user_id == '413059663'):
                     write_message(event.user_id, 'Хуй будешь?')
