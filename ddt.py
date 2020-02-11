@@ -22,7 +22,22 @@ def getAllActiveUsers(number_of_days):
         if unixtime - number_of_days * 86400 <= last_submission_time:
             active_users.append(user)
 
-getAllActiveUsers(7)
-print(len(active_users))
-for handle in active_users:
-    print (handle[constants.TABLE_COLUMN_HANDLE_])
+def mostDifficultTaskForSomeDay(number_of_days):
+    getAllActiveUsers(number_of_days)
+    res = {}
+    unixtime = time.mktime(datetime.datetime.now().timetuple())
+    for user in active_users:
+        handle = user[constants.TABLE_COLUMN_HANDLE_]
+        info = cf_api.getInfoAboutSolvedTasksWithHandle(handle)
+        if 'Error' in info:
+            continue
+        if len(info) < 1:
+            continue
+        diff = 0
+        for rating in info:
+            for task_name in info[rating]:
+                if unixtime - number_of_days * 86400 <= info[rating][task_name] and rating > diff:
+                    diff = rating
+        res[handle] = diff
+    res = sorted(res.items(), key=lambda value: int(value[1]), reverse=True)
+    return res

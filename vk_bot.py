@@ -81,26 +81,26 @@ def main():
                 response = urllib.request.urlopen(request_url)
                 res = json.loads(response.read())
             except Exception:
-                write_message(user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
+                write_message(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
                                        'кодфорсе закрыт')
             if 'result' not in res:
-                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
                 continue
             if len(res['result']) < 1:
-                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
                 continue
             if 'vkId' not in res['result'][0]:
-                write_message(user_id, 'Возникла ошибка при получении данных от cf API')
+                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
                 continue
             vk_id_from_cf = res['result'][0]['vkId']
-            if str(event.user_id) != str(vk_id_from_cf)
+            if str(event.user_id) != str(vk_id_from_cf):
                 write_message(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
                 continue
-            if table.isUserAlreadyExist(user_id) == True:
+            if table.isUserAlreadyExist(event.user_id) == True:
                 write_message(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
                 continue
-            table.addNewUser(handle, user_id)
-            write_message(user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
+            table.addNewUser(handle, event.user_id)
+            write_message(event.user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             command = event.text.lower()
             if command in constants.SYNC_:

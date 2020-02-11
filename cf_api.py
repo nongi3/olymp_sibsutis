@@ -10,30 +10,45 @@ import constants
 
 handles_ = []
 
-def findCodeforcesPoints(handle):
-    request_url = 'http://codeforces.com/api/user.status?handle=' + handle
-    response = urllib.request.urlopen(request_url)
-    time.sleep(1)
-    res = json.loads(response.read())
-    ans = {}
-    for i in res['result']:
-        if 'contestId' not in i:
+def getInfoAboutSolvedTasksWithHandle(handle):
+    try:
+        request_url = 'http://codeforces.com/api/user.status?handle=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {"Error": "can not get info from cf"}
+    if 'result' not in res:
+        return {"Error": "can not find result in json"}
+    solved_tasks = {}
+    for task in res['result']:
+        if 'contestId' not in task:
             continue
-        contestId = i['contestId']
-        if 'problem' not in i:
+        contestId = task['contestId']
+        if 'problem' not in task:
             continue
-        if 'rating' not in i['problem']:
+        if 'name' not in task['problem']:
             continue
-        rating = i['problem']['rating']
-        if i['verdict'] == 'OK':
+        if 'rating' not in task['problem']:
+            continue
+        if 'tags' in task['problem'] and '*special' in task['problem']['tags']:
+            continue
+        rating = task['problem']['rating']
+        task_name = task['problem']['name']
+        if task['verdict'] == 'OK':
             if contestId < 10000:
-                if rating not in ans:
-                    ans[rating] = 1
-                else:
-                    ans[rating] = ans[rating] + 1
+                if rating not in solved_tasks:
+                    solved_tasks[rating] = {}
+                if task_name not in solved_tasks[rating]:
+                    solved_tasks[rating][task_name] = 0
+                if task['creationTimeSeconds'] > solved_tasks[rating][task_name]:
+                    solved_tasks[rating][task_name] = task['creationTimeSeconds']
+    return solved_tasks
+
+def findCodeforcesPoints(handle):
+    ans = getInfoAboutSolvedTasksWithHandle(handle)
     res = 0
     for i in ans:
-        d = min(ans[i], 100)
+        d = min(len(ans[i]), 100)
         res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     return int(res)
 
@@ -44,19 +59,12 @@ def getVkIdFromCodeforces(handle):
     return res['result'][0]['vkId']
 
 def getTimeOfLastSubmissionWithHandle(handle):
-    try:
-        request_url = 'http://codeforces.com/api/user.status?handle=' + handle
-        response = urllib.request.urlopen(request_url)
-        res = json.loads(response.read())
-    except Exception:
+    info = getInfoAboutSolvedTasksWithHandle(handle)
+    if 'Error' in info:
         return 0
-    if 'result' not in res:
-        return 0
-    for task in res['result']:
-        if 'verdict' not in task:
-            continue
-        if task['verdict'] == 'OK':
-            return task['creationTimeSeconds']
-    return 0
-
-
+    last_sub = 0
+    for rating in info:
+        for task in info[rating]:
+            if info[rating][task] > last_sub:
+                last_sub = info[rating][task]
+    return last_sub
