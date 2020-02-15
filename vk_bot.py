@@ -26,11 +26,11 @@ def write_message(user_id, msg):
 sync_list = []
 
 
-def makeTopic(lot_name):
-    text = 'В следующем лоте - ' + lot_name + ' - принимают участие: ' + listToStr(goods.getParty(lot_name))
+def makeTopic(name):
+    text = 'В следующем лоте - ' + name + ' - принимают участие: ' + listToStr(goods.getParty(name))
     vk_api.VkApi(token=secret_constants.accecc_token).method('board.addTopic', {
         'group_id': '189233231',
-        'title': 'Проведение лота: ' + lot_name,
+        'title': 'Проведение лота: ' + name,
         'text': text,
         'from_group': 1,
         'attachments': []})
@@ -45,10 +45,6 @@ def listToStr(values):
     return res
 
 
-def isCorrectLot(st):
-    return st[(len(st.split()[0]) + 1):] in constants.CORRECT_LOTS_
-
-
 def isBinding(event):
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
             event.user_id in sync_list:
@@ -60,6 +56,7 @@ def isBinding(event):
         except Exception:
             write_message(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
                                          'кодфорсе закрыт')
+            return True
         if 'result' not in res:
             write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
             return True
@@ -177,36 +174,53 @@ def isHelp(command):
     return False
 
 
+def isCorrectEvent(event):
+    return event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user
+
+
+def isFromAdmin(event):
+    if event.user_id in constants.ADMIN_VK_ID_:
+        command = event.text.lower()
+        isExit(command)
+        return True
+    return False
+
+
+def isFromUser(event):
+    command = event.text.lower()
+    if isSyncCommand(command):
+        return True
+    if isGood(command):
+        return True
+    if isBad(command):
+        return True
+    if isBalance(command):
+        return True
+    if isReset(command):
+        return True
+    if isGreeting(command):
+        return True
+    if isRespect(command):
+        return True
+    if isPing(command):
+        return True
+    if isHelp(command):
+        return True
+
+
 def main():
     for event in longpoll.listen():
+        if not isCorrectEvent(event):
+            continue
+        if not isUserLogin(event.user_id):
+            continue
         if isBinding(event):
             continue
-        if event.user_id in constants.ADMIN_VK_ID_:
-            command = event.text.lower()
-            isExit(command)
-        if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
-            if not isUserLogin(event.user_id):
-                continue
-            command = event.text.lower()
-            if isSyncCommand(command):
-                continue
-            if isGood(command):
-                continue
-            if isBad(command):
-                continue
-            if isBalance(command):
-                continue
-            if isReset(command):
-                continue
-            if isGreeting(command):
-                continue
-            if isRespect(command):
-                continue
-            if isPing(command):
-                continue
-            if isHelp(command):
-                continue
-            write_message(event.user_id, 'Я не понимаю вас :-(')
+        if isFromAdmin(event):
+            continue
+        if isFromUser(event):
+            continue
+        write_message(event.user_id, 'Я не понимаю вас :-(')
 
 
 main()
