@@ -1,3 +1,4 @@
+# coding=utf-8
 import vk_api
 import json
 from vk_api.longpoll import VkLongPoll, VkEventType
@@ -72,49 +73,73 @@ def isCorrectLot(st):
 def isConduct(st):
     return st.split()[0] in constants.CONDUCT_
 
+def isBinding(event):
+    if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
+            event.user_id in sync_list:
+        handle = event.text.lower()
+        try:
+            request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+            response = urllib.request.urlopen(request_url)
+            res = json.loads(response.read())
+        except Exception:
+            write_message(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
+                                         'кодфорсе закрыт')
+        if 'result' not in res:
+            write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
+            return True
+        if len(res['result']) < 1:
+            write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
+            return True
+        if 'vkId' not in res['result'][0]:
+            write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
+            return True
+        vk_id_from_cf = res['result'][0]['vkId']
+        if str(event.user_id) != str(vk_id_from_cf):
+            write_message(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
+            return True
+        if table.isUserAlreadyExist(event.user_id) == True:
+            write_message(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
+            return True
+        table.addNewUser(handle, event.user_id)
+        write_message(event.user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
+        return True
+    return False
+
+def isSyncCommand(command):
+    if command not in constants.SYNC_:
+        return False
+    if event.user_id in sync_list:
+        write_message(event.user_id, 'Жду с нетерпением вашего хэндла, чтобы подтвердить вступление'
+                                     ' в наши ряды')
+        return True
+    write_message(event.user_id, 'Введите ваш хэндл на codeforces для '
+                                 'добавления вас в таблицу и синхронизации с аккаунтом vk')
+    sync_list.append(event.user_id)
+    return True
+
+def isUserLogin(user_id):
+    if table.getHandleWithVkId(user_id) == 'None':
+        write_message(user_id, 'Пройдите регистрацию, пожалуйста!')
+        return False
+    return True
+
+def isExit(command):
+    if command in constants.EXIT_COMMANDS_:
+        write_message(event.user_id, 'Пока :-D')
+        exit()
+
 def main():
     for event in longpoll.listen():
-        if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and event.user_id in sync_list:
-            handle = event.text.lower()
-            try:
-                request_url = 'http://codeforces.com/api/user.info?handles=' + handle
-                response = urllib.request.urlopen(request_url)
-                res = json.loads(response.read())
-            except Exception:
-                write_message(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                       'кодфорсе закрыт')
-            if 'result' not in res:
-                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
-                continue
-            if len(res['result']) < 1:
-                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
-                continue
-            if 'vkId' not in res['result'][0]:
-                write_message(event.user_id, 'Возникла ошибка при получении данных от cf API')
-                continue
-            vk_id_from_cf = res['result'][0]['vkId']
-            if str(event.user_id) != str(vk_id_from_cf):
-                write_message(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
-                continue
-            if table.isUserAlreadyExist(event.user_id) == True:
-                write_message(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
-                continue
-            table.addNewUser(handle, event.user_id)
-            write_message(event.user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
+        if isBinding(event):
+            continue
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
+            if not isUserLogin(event.user_id):
+                continue
             command = event.text.lower()
-            if command in constants.SYNC_:
-                if event.user_id in sync_list:
-                    write_message(event.user_id, 'Жду с нетерпением вашего хэндла, чтобы подтвердить вступление'
-                                                 ' в наши ряды')
-                    continue
-                write_message(event.user_id, 'Введите ваш хэндл на codeforces для '
-                                       'добавления вас в таблицу и синхронизации с аккаунтом vk')
-                sync_list.append(event.user_id)
-            elif command in constants.EXIT_COMMANDS_:
-                write_message(event.user_id, 'Пока :-D')
-                exit()
-            elif isLottery(command):
+            if isSyncCommand(command):
+                continue
+            isExit(command)
+            if isLottery(command):
                 if str(event.user_id) == '30806644':
                     global is_lottery_start
                     if (command == 'розыгрыш'):
@@ -213,10 +238,7 @@ def main():
                     table.resetAllUsersInfo()
                     write_message(event.user_id, 'Таблица полностью обновлена!')
             else:
-                if (event.user_id == '413059663'):
-                    write_message(event.user_id, 'Хуй будешь?')
-                else:
-                    write_message(event.user_id, 'Я не понимаю вас :-(')
+                write_message(event.user_id, 'Я не понимаю вас :-(')
             continue
 
 main()
