@@ -186,25 +186,7 @@ def main():
                 continue
             if isGreeting(command):
                 continue
-            if isBet(command) > 0:
-                if isCorrectLot(command) == 0:
-                    write_message(event.user_id, 'Неверное именование лота! Проверить наличие лотов можно в группе.')
-                    continue
-                lot_name = command[(len(command.split()[0]) + 1):]
-                current_price = int(price.getPriceWithName(lot_name))
-                if current_price < 0:
-                    write_message(event.user_id, 'Не удается определить цену товара. Обратитесь за помощью к '
-                                                 'администраторам группу!')
-                    continue
-                if table.getPointsWithVkId(event.user_id) < current_price:
-                    write_message(event.user_id, 'Недостаточно средств для совершения операции!')
-                    continue
-                if goods.tryToAddBet(table.getHandleWithVkId(event.user_id), lot_name, current_price):
-                    table.setSpentPointsWithVkId(event.user_id, current_price)
-                    write_message(event.user_id, 'Лот успешно выкуплен!')
-                else:
-                    write_message(event.user_id, 'Произошла ошибка при попытке записать данные в таблицу!')
-            elif command in constants.WHO_RESPECT_THE_BEES:
+            if command in constants.WHO_RESPECT_THE_BEES:
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
             elif command in constants.PING_:
                 write_message(event.user_id, 'Автор уведомлен о сборе')
