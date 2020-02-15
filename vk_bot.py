@@ -18,11 +18,13 @@ vk_session = vk_api.VkApi(token=secret_constants.token)
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
 
+
 def write_message(user_id, msg):
     random_id = random.randint(1, 1234567898765)
     vk_session.method('messages.send', {'user_id': user_id, 'message': msg, 'random_id': random_id})
 
 sync_list = []
+
 
 def makeTopic(lot_name):
     text = 'В следующем лоте - ' + lot_name + ' - принимают участие: ' + listToStr(goods.getParty(lot_name))
@@ -33,6 +35,7 @@ def makeTopic(lot_name):
         'from_group': 1,
         'attachments': []})
 
+
 def listToStr(values):
     res = ''
     for i in range(0, len(values)):
@@ -41,15 +44,19 @@ def listToStr(values):
             res += ', '
     return res
 
+
 def isBet(st):
     a = st.split()
     return a[0] in constants.BET_COMMANDS_
 
+
 def isCorrectLot(st):
     return st[(len(st.split()[0]) + 1):] in constants.CORRECT_LOTS_
 
+
 def isConduct(st):
     return st.split()[0] in constants.CONDUCT_
+
 
 def isBinding(event):
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
@@ -75,13 +82,14 @@ def isBinding(event):
         if str(event.user_id) != str(vk_id_from_cf):
             write_message(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
             return True
-        if table.isUserAlreadyExist(event.user_id) == True:
+        if table.isUserAlreadyExist(event.user_id):
             write_message(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
             return True
         table.addNewUser(handle, event.user_id)
         write_message(event.user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
         return True
     return False
+
 
 def isSyncCommand(command):
     if command not in constants.SYNC_:
@@ -95,46 +103,90 @@ def isSyncCommand(command):
     sync_list.append(event.user_id)
     return True
 
+
 def isUserLogin(user_id):
     if table.getHandleWithVkId(user_id) == 'None':
         write_message(user_id, 'Пройдите регистрацию, пожалуйста!')
         return False
     return True
 
+
 def isExit(command):
     if command in constants.EXIT_COMMANDS_:
         write_message(event.user_id, 'Пока :-D')
         exit()
 
+
+def isGood(command):
+    if command in constants.GOOD_WORDS_:
+        write_message(event.user_id, 'Какой вы клевый! Уважаю!')
+        return True
+    return False
+
+
+def isBad(command):
+    if command in constants.bad_words:
+        write_message(event.user_id, 'Сейчас обидно было :-(')
+        return True
+    return False
+
+
+def isBalance(command):
+    if command in constants.balance:
+        points = table.getPointsWithVkId(event.user_id)
+        if points < 0:
+            write_message(event.user_id, 'Не удалось получить данные о вашем счете!')
+        else:
+            write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
+        return True
+    return False
+
+
+def isReset(command):
+    if command in constants.RESET_ONE_USER_POINTS_:
+        table.resetPointsWithVkId(event.user_id)
+        write_message(event.user_id, 'Данные успешно обновлены!')
+        points = table.getPointsWithVkId(event.user_id)
+        write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
+        return True
+    elif command in constants.RESET_ALL_USERS_POINTS_:
+        write_message(event.user_id, 'Обновление таблицы может занять некоторое время!')
+        table.resetAllUsersInfo()
+        write_message(event.user_id, 'Таблица полностью обновлена!')
+        return True
+    return False
+
+
+def isGreeting(command):
+    if command in constants.HELLO_:
+        write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
+        return True
+    return False
+
+
 def main():
     for event in longpoll.listen():
         if isBinding(event):
             continue
+        if event.user_id in constants.ADMIN_VK_ID_:
+            isExit(command)
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             if not isUserLogin(event.user_id):
                 continue
             command = event.text.lower()
             if isSyncCommand(command):
                 continue
-            isExit(command)
-            if command in constants.bad_words:
-                write_message(event.user_id, 'Сейчас обидно было :-(')
-            elif command in constants.balance:
-                points = table.getPointsWithVkId(event.user_id)
-                if points < 0:
-                    write_message(event.user_id, 'Не удалось получить данные о вашем счете!')
-                else:
-                    write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
-            elif command in constants.GOOD_WORDS_:
-                write_message(event.user_id, 'Какой вы клевый! Уважаю!')
-            elif command in constants.RESET_ONE_USER_POINTS_:
-                table.resetPointsWithVkId(event.user_id)
-                write_message(event.user_id, 'Данные успешно обновлены!')
-                points = table.getPointsWithVkId(event.user_id)
-                write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
-            elif command in constants.HELLO_:
-                write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
-            elif isBet(command) > 0:
+            if isGood(command):
+                continue
+            if isBad(command):
+                continue
+            if isBalance(command):
+                continue
+            if isReset(command):
+                continue
+            if isGreeting(command):
+                continue
+            if isBet(command) > 0:
                 if isCorrectLot(command) == 0:
                     write_message(event.user_id, 'Неверное именование лота! Проверить наличие лотов можно в группе.')
                     continue
@@ -176,10 +228,6 @@ def main():
                     goods.tryToResetBets(lot_name)
                     makeTopic(lot_name)
                     write_message(event.user_id, 'Лот успешно зарегистрирован.')
-                elif command in constants.RESET_ALL_USERS_POINTS_:
-                    write_message(event.user_id, 'Обновление таблицы может занять некоторое время!')
-                    table.resetAllUsersInfo()
-                    write_message(event.user_id, 'Таблица полностью обновлена!')
             else:
                 write_message(event.user_id, 'Я не понимаю вас :-(')
             continue
