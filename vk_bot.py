@@ -45,17 +45,8 @@ def listToStr(values):
     return res
 
 
-def isBet(st):
-    a = st.split()
-    return a[0] in constants.BET_COMMANDS_
-
-
 def isCorrectLot(st):
     return st[(len(st.split()[0]) + 1):] in constants.CORRECT_LOTS_
-
-
-def isConduct(st):
-    return st.split()[0] in constants.CONDUCT_
 
 
 def isBinding(event):
@@ -164,11 +155,34 @@ def isGreeting(command):
     return False
 
 
+def isRespect(command):
+    if command in constants.WHO_RESPECT_THE_BEES:
+        write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
+        return True
+    return False
+
+
+def isPing(command):
+    if command in constants.PING_:
+        write_message('30806644', 'Какой-то петуч нуждается в помощи.')
+        write_message(event.user_id, 'Ваша молитва услышана!')
+        return True
+    return False
+
+
+def isHelp(command):
+    if command in constants.HELP_:
+        write_message(event.user_id, 'Список доступных вам команд:')
+        return True
+    return False
+
+
 def main():
     for event in longpoll.listen():
         if isBinding(event):
             continue
         if event.user_id in constants.ADMIN_VK_ID_:
+            command = event.text.lower()
             isExit(command)
         if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user:
             if not isUserLogin(event.user_id):
@@ -186,32 +200,13 @@ def main():
                 continue
             if isGreeting(command):
                 continue
-            if command in constants.WHO_RESPECT_THE_BEES:
-                write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
-            elif command in constants.PING_:
-                write_message(event.user_id, 'Автор уведомлен о сборе')
-            elif command in constants.HELP_:
-                write_message(event.user_id, 'Список доступных вам команд:')
-            elif str(event.user_id) in ADMIN_VK_ID_:
-                if isConduct(command) == True:
-                    if isCorrectLot(command) == False:
-                        write_message(event.user_id, 'Неверное именование лота! '
-                                                     'Проверить наличие лотов можно в группе.')
-                        continue
-                    lot_name = command[(len(command.split()[0]) + 1):]
-                    current_price = int(goods.getPrice(lot_name))
-                    if current_price < 0:
-                        write_message(event.user_id, 'Не удается определить цену товара. Обратитесь за помощью к '
-                                                     'администраторам группу!')
-                        continue
-                    if current_price > goods.getSumOfBets(lot_name):
-                        write_message(event.user_id, 'Собрано недостаточно средств для покупки лота!')
-                        continue
-                    goods.tryToResetBets(lot_name)
-                    makeTopic(lot_name)
-                    write_message(event.user_id, 'Лот успешно зарегистрирован.')
-            else:
-                write_message(event.user_id, 'Я не понимаю вас :-(')
-            continue
+            if isRespect(command):
+                continue
+            if isPing(command):
+                continue
+            if isHelp(command):
+                continue
+            write_message(event.user_id, 'Я не понимаю вас :-(')
+
 
 main()
