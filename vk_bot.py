@@ -22,9 +22,6 @@ def write_message(user_id, msg):
     random_id = random.randint(1, 1234567898765)
     vk_session.method('messages.send', {'user_id': user_id, 'message': msg, 'random_id': random_id})
 
-is_lottery_start = False
-lottery_list = []
-
 sync_list = []
 
 def makeTopic(lot_name):
@@ -35,25 +32,6 @@ def makeTopic(lot_name):
         'text': text,
         'from_group': 1,
         'attachments': []})
-
-def tryToLottery(number):
-    global lottery_list
-    random.shuffle(lottery_list)
-    res = []
-    if len(lottery_list) < number:
-        for i in lottery_list:
-            res.append(i)
-    else:
-        for i in range(number):
-            res.append(lottery_list[i])
-    return res
-
-def isLottery(st):
-    a = st.split()
-    if a[0] in constants.LOTTERY_:
-        return True
-    else:
-        return False
 
 def listToStr(values):
     res = ''
@@ -139,42 +117,7 @@ def main():
             if isSyncCommand(command):
                 continue
             isExit(command)
-            if isLottery(command):
-                if str(event.user_id) == '30806644':
-                    global is_lottery_start
-                    if (command == 'розыгрыш'):
-                        if is_lottery_start:
-                            write_message(event.user_id, 'Никита, ты уже начал розыгрыш! Не балуйся!')
-                            continue
-                        is_lottery_start = True
-                        write_message(event.user_id, 'Да начнется розыгрыш!')
-                    else:
-                        a = command.split()
-                        if len(a) != 2:
-                            write_message(event.user_id, 'Никита, опять фигню какую-то ввел!')
-                            continue
-                        if a[1].isdigit() == 0:
-                            write_message(event.user_id, 'второе значение должно быть числом')
-                            continue
-                        winners = tryToLottery(int(a[1]))
-                        write_message(event.user_id, 'В розыгрыше выиграли:')
-                        for winner in winners:
-                            write_message(event.user_id, str(winner))
-                        lottery_list.clear()
-                        is_lottery_start = False
-                else:
-                    if is_lottery_start == 0:
-                        write_message(event.user_id, 'Розыгрыш еще не начался!')
-                        continue
-                    user = vk_session.method("users.get", {"user_ids": event.user_id})
-                    fullname = user[0]['first_name'] + ' ' + user[0]['last_name']
-                    if fullname not in lottery_list:
-                        lottery_list.append(fullname)
-                        write_message(event.user_id, 'Ваш голос учтен!')
-                    else:
-                        write_message(event.user_id, 'Вы уже принимаете участие в розыгрыше!')
-
-            elif command in constants.bad_words:
+            if command in constants.bad_words:
                 write_message(event.user_id, 'Сейчас обидно было :-(')
             elif command in constants.balance:
                 points = table.getPointsWithVkId(event.user_id)
