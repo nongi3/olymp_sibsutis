@@ -1,14 +1,11 @@
-from pprint import pprint
-
-import urllib.request
-import json
 import datetime
-import time
 import functools
+import json
+import time
+import urllib.request
 
 import constants
 
-handles_ = []
 
 def getInfoAboutSolvedTasksWithHandle(handle):
     try:
@@ -23,7 +20,7 @@ def getInfoAboutSolvedTasksWithHandle(handle):
     for task in res['result']:
         if 'contestId' not in task:
             continue
-        contestId = task['contestId']
+        contest_id = task['contestId']
         if 'problem' not in task:
             continue
         if 'name' not in task['problem']:
@@ -35,7 +32,7 @@ def getInfoAboutSolvedTasksWithHandle(handle):
         rating = task['problem']['rating']
         task_name = task['problem']['name']
         if task['verdict'] == 'OK':
-            if contestId < 10000:
+            if contest_id < 10000:
                 if rating not in solved_tasks:
                     solved_tasks[rating] = {}
                 if task_name not in solved_tasks[rating]:
@@ -43,6 +40,7 @@ def getInfoAboutSolvedTasksWithHandle(handle):
                 if task['creationTimeSeconds'] > solved_tasks[rating][task_name]:
                     solved_tasks[rating][task_name] = task['creationTimeSeconds']
     return solved_tasks
+
 
 def findCodeforcesPoints(handle):
     ans = getInfoAboutSolvedTasksWithHandle(handle)
@@ -52,11 +50,13 @@ def findCodeforcesPoints(handle):
         res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     return int(res)
 
+
 def getVkIdFromCodeforces(handle):
     request_url = 'http://codeforces.com/api/user.info?handles=' + handle
     response = urllib.request.urlopen(request_url)
     res = json.loads(response.read())
     return res['result'][0]['vkId']
+
 
 def getTimeOfLastSubmissionWithHandle(handle):
     info = getInfoAboutSolvedTasksWithHandle(handle)
