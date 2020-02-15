@@ -1,17 +1,17 @@
 # coding=utf-8
-import vk_api
 import json
-from vk_api.longpoll import VkLongPoll, VkEventType
 import random
-from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import urllib.request
+import vk_api
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
+from vk_api.longpoll import VkLongPoll, VkEventType
 
 import cf_api
-import secret_constants
 import constants
-import table
 import goods
 import price
+import secret_constants
+import table
 
 vk_session = vk_api.VkApi(token=secret_constants.token)
 
@@ -22,6 +22,7 @@ vk = vk_session.get_api()
 def write_message(user_id, msg):
     random_id = random.randint(1, 1234567898765)
     vk_session.method('messages.send', {'user_id': user_id, 'message': msg, 'random_id': random_id})
+
 
 sync_list = []
 
