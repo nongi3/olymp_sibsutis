@@ -179,7 +179,7 @@ def main():
                 if table.getPointsWithVkId(event.user_id) < current_price:
                     write_message(event.user_id, 'Недостаточно средств для совершения операции!')
                     continue
-                if goods.tryToAddBet(table.getHandleWithVkId(event.user_id), lot_name, current_price) == True:
+                if goods.tryToAddBet(table.getHandleWithVkId(event.user_id), lot_name, current_price):
                     table.setSpentPointsWithVkId(event.user_id, current_price)
                     write_message(event.user_id, 'Лот успешно выкуплен!')
                 else:
@@ -188,6 +188,8 @@ def main():
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
             elif command in constants.PING_:
                 write_message(event.user_id, 'Автор уведомлен о сборе')
+            elif command in constants.HELP_:
+                write_message(event.user_id, 'Список доступных вам команд:')
             elif str(event.user_id) in ADMIN_VK_ID_:
                 if isConduct(command) == True:
                     if isCorrectLot(command) == False:
