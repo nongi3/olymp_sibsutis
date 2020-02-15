@@ -49,3 +49,5 @@ DIV_THREE_ = ['div3', 'див3']
 LECTURE_WORDS_ = ['lecture', 'лекция']
 
 PING_ = ['ping', 'пинг']
+
+ADMIN_VK_ID_ = ['30806644', '262942796']

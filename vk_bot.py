@@ -56,7 +56,7 @@ def isLottery(st):
 
 def listToStr(values):
     res = ''
-    for i in range(0,len(values)):
+    for i in range(0, len(values)):
         res += str(values[i])
         if i + 1 < len(values):
             res += ', '
@@ -162,6 +162,8 @@ def main():
             elif command in constants.RESET_ONE_USER_POINTS_:
                 table.resetPointsWithVkId(event.user_id)
                 write_message(event.user_id, 'Данные успешно обновлены!')
+                points = table.getPointsWithVkId(event.user_id)
+                write_message(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
             elif command in constants.HELLO_:
                 write_message(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
             elif isBet(command) > 0:
@@ -186,7 +188,7 @@ def main():
                 write_message(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
             elif command in constants.PING_:
                 write_message(event.user_id, 'Автор уведомлен о сборе')
-            elif str(event.user_id) == '30806644':
+            elif str(event.user_id) in ADMIN_VK_ID_:
                 if isConduct(command) == True:
                     if isCorrectLot(command) == False:
                         write_message(event.user_id, 'Неверное именование лота! '
