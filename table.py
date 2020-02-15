@@ -1,3 +1,4 @@
+# coding=utf-8
 from pprint import pprint
 import urllib.request
 import json
@@ -41,14 +42,14 @@ def getPointsWithHandle(handle):
 def getPointsWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
             return int(value[constants.TABLE_COLUMN_ALL_POINTS_])
     return -1
 
 def setSpentPointsWithVkId(vkId, points):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
             value[constants.TABLE_COLUMN_SPENT_POINTS_] = str(int(value[constants.TABLE_COLUMN_SPENT_POINTS_]) +
                                                               int(points))
             value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
@@ -60,7 +61,7 @@ def setSpentPointsWithVkId(vkId, points):
 def resetPointsWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
             value[constants.TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
             value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
                                                             int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
@@ -71,7 +72,7 @@ def resetPointsWithVkId(vkId):
 def getHandleWithVkId(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
             return value[constants.TABLE_COLUMN_HANDLE_]
     return "None"
 
@@ -135,6 +136,6 @@ def resetAllUsersInfo():
 def isUserAlreadyExist(vkId):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VKID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
             return True
     return False
