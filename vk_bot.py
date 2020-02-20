@@ -80,7 +80,7 @@ def isBinding(event):
     return False
 
 
-def isSyncCommand(command):
+def isSyncCommand(event, command):
     if command not in constants.SYNC_:
         return False
     if event.user_id in sync_list:
@@ -100,27 +100,27 @@ def isUserLogin(user_id):
     return True
 
 
-def isExit(command):
+def isExit(event, command):
     if command in constants.EXIT_COMMANDS_:
         writeMessage(event.user_id, 'Пока :-D')
         exit()
 
 
-def isGood(command):
+def isGood(event, command):
     if command in constants.GOOD_WORDS_:
         writeMessage(event.user_id, 'Какой вы клевый! Уважаю!')
         return True
     return False
 
 
-def isBad(command):
+def isBad(event, command):
     if command in constants.bad_words:
         writeMessage(event.user_id, 'Сейчас обидно было :-(')
         return True
     return False
 
 
-def isBalance(command):
+def isBalance(event, command):
     if command in constants.balance:
         points = table.getPointsWithVkId(event.user_id)
         if points < 0:
@@ -131,7 +131,7 @@ def isBalance(command):
     return False
 
 
-def isReset(command):
+def isReset(event, command):
     if command in constants.RESET_ONE_USER_POINTS_:
         table.resetPointsWithVkId(event.user_id)
         writeMessage(event.user_id, 'Данные успешно обновлены!')
@@ -146,21 +146,21 @@ def isReset(command):
     return False
 
 
-def isGreeting(command):
+def isGreeting(event, command):
     if command in constants.HELLO_:
         writeMessage(event.user_id, 'Добрый день! Рад тебя видеть, друг!')
         return True
     return False
 
 
-def isRespect(command):
+def isRespect(event, command):
     if command in constants.WHO_RESPECT_THE_BEES:
         writeMessage(event.user_id, 'кто к ним не пристает,\n того они не жалят,\n тому приносят мёд!')
         return True
     return False
 
 
-def isPing(command):
+def isPing(event, command):
     if command in constants.PING_:
         writeMessage('30806644', 'Какой-то петуч нуждается в помощи.')
         writeMessage(event.user_id, 'Ваша молитва услышана!')
@@ -168,7 +168,7 @@ def isPing(command):
     return False
 
 
-def isHelp(command):
+def isHelp(event, command):
     if command in constants.HELP_:
         writeMessage(event.user_id, 'Список доступных вам команд:')
         return True
@@ -189,23 +189,23 @@ def isFromAdmin(event):
 
 def isFromUser(event):
     command = event.text.lower()
-    if isSyncCommand(command):
+    if isSyncCommand(event, command):
         return True
-    if isGood(command):
+    if isGood(event, command):
         return True
-    if isBad(command):
+    if isBad(event, command):
         return True
-    if isBalance(command):
+    if isBalance(event, command):
         return True
-    if isReset(command):
+    if isReset(event, command):
         return True
-    if isGreeting(command):
+    if isGreeting(event, command):
         return True
-    if isRespect(command):
+    if isRespect(event, command):
         return True
-    if isPing(command):
+    if isPing(event, command):
         return True
-    if isHelp(command):
+    if isHelp(event, command):
         return True
 
 
