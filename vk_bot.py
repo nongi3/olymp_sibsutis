@@ -180,9 +180,9 @@ def isCorrectEvent(event):
 
 
 def isFromAdmin(event):
-    if event.user_id in constants.ADMIN_VK_ID_:
+    if str(event.user_id) in constants.ADMIN_VK_ID_:
         command = event.text.lower()
-        isExit(command)
+        isExit(event, command)
         return True
     return False
 
