@@ -183,7 +183,7 @@ def isFromAdmin(event):
     if str(event.user_id) in constants.ADMIN_VK_ID_:
         command = event.text.lower()
         isExit(event, command)
-        return True
+        return False
     return False
 
 
