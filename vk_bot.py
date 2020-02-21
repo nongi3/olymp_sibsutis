@@ -191,6 +191,8 @@ def isFromUser(event):
     command = event.text.lower()
     if isSyncCommand(event, command):
         return True
+    if not isUserLogin(event.user_id):
+        return True
     if isGood(event, command):
         return True
     if isBad(event, command):
@@ -212,8 +214,6 @@ def isFromUser(event):
 def main():
     for event in longpoll.listen():
         if not isCorrectEvent(event):
-            continue
-        if not isUserLogin(event.user_id):
             continue
         if isBinding(event):
             continue
