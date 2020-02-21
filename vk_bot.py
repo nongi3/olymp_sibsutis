@@ -56,7 +56,7 @@ def isBinding(event):
             res = json.loads(response.read())
         except Exception:
             writeMessage(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                         'кодфорсе закрыт')
+                                        'кодфорсе закрыт')
             return True
         if 'result' not in res:
             writeMessage(event.user_id, 'Возникла ошибка при получении данных от cf API')
@@ -83,12 +83,15 @@ def isBinding(event):
 def isSyncCommand(event, command):
     if command not in constants.SYNC_:
         return False
+    if table.isUserAlreadyExist(event.user_id):
+        writeMessage(event.user_id, 'Вы уже зарегистрированы в системе! Повторное подтверрждение не требуется!')
+        return True
     if event.user_id in sync_list:
         writeMessage(event.user_id, 'Жду с нетерпением вашего хэндла, чтобы подтвердить вступление'
-                                     ' в наши ряды')
+                                    ' в наши ряды')
         return True
     writeMessage(event.user_id, 'Введите ваш хэндл на codeforces для '
-                                 'добавления вас в таблицу и синхронизации с аккаунтом vk')
+                                'добавления вас в таблицу и синхронизации с аккаунтом vk')
     sync_list.append(event.user_id)
     return True
 
