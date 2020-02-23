@@ -134,6 +134,17 @@ def isBalance(event, command):
     return False
 
 
+def isPosition(event, command):
+    if command in constants.POSITION_:
+        position = table.getPositionWithVkId(event.user_id)
+        if position < 0:
+            writeMessage(event.user_id, 'Не удалось получить данные о вас!')
+        else:
+            writeMessage(event.user_id, 'Вы находитесь на ' + str(position) + ' месте.')
+        return True
+    return False
+
+
 def isReset(event, command):
     if command in constants.RESET_ONE_USER_POINTS_:
         table.resetPointsWithVkId(event.user_id)
@@ -142,6 +153,9 @@ def isReset(event, command):
         writeMessage(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
         return True
     elif command in constants.RESET_ALL_USERS_POINTS_:
+        if event.user_id not in constants.ADMIN_VK_ID_:
+            writeMessage(event.user_id, 'Вам не доступна эта команда!')
+            return True
         writeMessage(event.user_id, 'Обновление таблицы может занять некоторое время!')
         table.resetAllUsersInfo()
         writeMessage(event.user_id, 'Таблица полностью обновлена!')
@@ -201,6 +215,8 @@ def isFromUser(event):
     if isBad(event, command):
         return True
     if isBalance(event, command):
+        return True
+    if isPosition(event, command):
         return True
     if isReset(event, command):
         return True
