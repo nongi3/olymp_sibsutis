@@ -145,6 +145,16 @@ def isPosition(event, command):
     return False
 
 
+def isLeaders(event, command):
+    if command in constants.LEADERS_:
+        leaders = table.getLeaders()
+        writeMessage(event.user_id, 'Десятка лидеров:')
+        for i in range(0, 10):
+            writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i])
+        return True
+    return False
+
+
 def isReset(event, command):
     if command in constants.RESET_ONE_USER_POINTS_:
         if not table.resetPointsWithVkId(event.user_id):
@@ -231,6 +241,8 @@ def isFromUser(event):
     if isPing(event, command):
         return True
     if isHelp(event, command):
+        return True
+    if isLeaders(event, command):
         return True
 
 

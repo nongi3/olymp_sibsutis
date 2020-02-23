@@ -159,3 +159,15 @@ def getPositionWithVkId(vkId):
         if str(vkId) == str(value[constants.TABLE_COLUMN_VK_ID_]):
             return pos
     return -1
+
+
+def getLeaders():
+    values = getAllUsersInfo()
+    res = []
+    ind = 0
+    for value in values:
+        ind = ind + 1
+        if ind > 10:
+            break
+        res.append(value[constants.TABLE_COLUMN_HANDLE_])
+    return res
