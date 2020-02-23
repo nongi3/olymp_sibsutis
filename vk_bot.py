@@ -150,7 +150,8 @@ def isLeaders(event, command):
         leaders = table.getLeaders()
         writeMessage(event.user_id, 'Десятка лидеров:')
         for i in range(0, 10):
-            writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i])
+            writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
+                         leaders[i][constants.TABLE_COLUMN_ALL_POINTS_])
         return True
     return False
 

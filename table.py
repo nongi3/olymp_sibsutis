@@ -169,5 +169,5 @@ def getLeaders():
         ind = ind + 1
         if ind > 10:
             break
-        res.append(value[constants.TABLE_COLUMN_HANDLE_])
+        res.append(value)
     return res
