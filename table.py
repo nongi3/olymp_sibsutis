@@ -156,6 +156,6 @@ def getPositionWithVkId(vkId):
     pos = 0
     for value in values:
         pos = pos + 1
-        if vkId == value[constants.TABLE_COLUMN_VK_ID_]:
+        if str(vkId) == str(value[constants.TABLE_COLUMN_VK_ID_]):
             return pos
     return -1
