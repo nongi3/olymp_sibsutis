@@ -203,6 +203,14 @@ def isPing(event, command):
 def isHelp(event, command):
     if command in constants.HELP_:
         writeMessage(event.user_id, 'Список доступных вам команд:')
+        writeMessage(event.user_id, 'лидеры - получение топ 10;')
+        writeMessage(event.user_id, 'пинг - позвать на помощь Бога;')
+        writeMessage(event.user_id, 'рейтинг - узнать текущую позицию в рейтинге;')
+        writeMessage(event.user_id, 'кто пчелок уважает - узнать истину;')
+        writeMessage(event.user_id, 'привет - чтобы быть вежливым;')
+        writeMessage(event.user_id, 'синхра - чтобы начать регистрацию;')
+        writeMessage(event.user_id, 'обнови меня - чтобы обновить свой рейтинг;')
+        writeMessage(event.user_id, 'баланс - текущее количество баллов;')
         return True
     return False
 
