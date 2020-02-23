@@ -71,7 +71,8 @@ def resetPointsWithVkId(vkId):
                                                             int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
                                                             int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
             setAllUsersInfo(values)
-            break
+            return True
+    return False
 
 
 def getHandleWithVkId(vkId):

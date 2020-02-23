@@ -147,10 +147,14 @@ def isPosition(event, command):
 
 def isReset(event, command):
     if command in constants.RESET_ONE_USER_POINTS_:
-        table.resetPointsWithVkId(event.user_id)
+        if not table.resetPointsWithVkId(event.user_id):
+            writeMessage(event.user_id, 'Данные о вас не найдены в таблице!')
+            return True
         writeMessage(event.user_id, 'Данные успешно обновлены!')
         points = table.getPointsWithVkId(event.user_id)
         writeMessage(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
+        position = table.getPositionWithVkId(event.user_id)
+        writeMessage(event.user_id, 'Вы находитесь на ' + str(position) + ' месте.')
         return True
     elif command in constants.RESET_ALL_USERS_POINTS_:
         if event.user_id not in constants.ADMIN_VK_ID_:
