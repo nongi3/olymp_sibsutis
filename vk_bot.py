@@ -227,6 +227,13 @@ def isFromAdmin(event):
     return False
 
 
+def isTaskList(event, command):
+    if command in constants.TRAINING_FIRST_FORMAT_:
+
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isSyncCommand(event, command):
@@ -253,6 +260,9 @@ def isFromUser(event):
         return True
     if isLeaders(event, command):
         return True
+    if isTaskList(event, command):
+        return True
+    return False
 
 
 def main():
