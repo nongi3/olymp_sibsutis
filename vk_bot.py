@@ -194,7 +194,7 @@ def isRespect(event, command):
 
 def isPing(event, command):
     if command in constants.PING_:
-        writeMessage('30806644', 'Какой-то петуч нуждается в помощи.')
+        writeMessage('30806644', 'Какой-то петуч нуждается в помощи. Ссылка: vk.com/id' + str(event.user_id))
         writeMessage(event.user_id, 'Ваша молитва услышана!')
         return True
     return False
