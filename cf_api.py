@@ -68,3 +68,19 @@ def getTimeOfLastSubmissionWithHandle(handle):
             if info[rating][task] > last_sub:
                 last_sub = info[rating][task]
     return last_sub
+
+
+def getUnsolvedTasksWithHandle(handle):
+    all_tasks = getInfoAboutSolvedTasksWithHandle('ruban')
+    if 'Error' in all_tasks:
+        return {}
+    solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
+    if 'Error' in solved_tasks:
+        return {}
+    for rating in solved_tasks:
+        for name in solved_tasks[rating]:
+            if name in all_tasks[rating]:
+                all_tasks[rating].pop(name)
+                if len(all_tasks[rating]) == 0:
+                    all_tasks.pop(rating)
+    return all_tasks
