@@ -168,7 +168,7 @@ def isReset(event, command):
         writeMessage(event.user_id, 'Вы находитесь на ' + str(position) + ' месте.')
         return True
     elif command in constants.RESET_ALL_USERS_POINTS_:
-        if event.user_id not in constants.ADMIN_VK_ID_:
+        if str(event.user_id) not in constants.ADMIN_VK_ID_:
             writeMessage(event.user_id, 'Вам не доступна эта команда!')
             return True
         writeMessage(event.user_id, 'Обновление таблицы может занять некоторое время!')
