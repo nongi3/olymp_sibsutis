@@ -29,6 +29,9 @@ def getInfoAboutSolvedTasksWithHandle(handle):
             continue
         if 'tags' in task['problem'] and '*special' in task['problem']['tags']:
             continue
+        if 'index' not in task['problem']:
+            continue
+        index = task['problem']['index']
         rating = task['problem']['rating']
         task_name = task['problem']['name']
         if task['verdict'] == 'OK':
@@ -36,9 +39,10 @@ def getInfoAboutSolvedTasksWithHandle(handle):
                 if rating not in solved_tasks:
                     solved_tasks[rating] = {}
                 if task_name not in solved_tasks[rating]:
-                    solved_tasks[rating][task_name] = 0
-                if task['creationTimeSeconds'] > solved_tasks[rating][task_name]:
-                    solved_tasks[rating][task_name] = task['creationTimeSeconds']
+                    solved_tasks[rating][task_name] = {'creationTimeSeconds': task['creationTimeSeconds'],
+                                                       'contestId': contest_id, 'index': index}
+                if task['creationTimeSeconds'] > solved_tasks[rating][task_name]['creationTimeSeconds']:
+                    solved_tasks[rating][task_name]['creationTimeSeconds'] = task['creationTimeSeconds']
     return solved_tasks
 
 
@@ -65,8 +69,8 @@ def getTimeOfLastSubmissionWithHandle(handle):
     last_sub = 0
     for rating in info:
         for task in info[rating]:
-            if info[rating][task] > last_sub:
-                last_sub = info[rating][task]
+            if info[rating][task]['creationTimeSeconds'] > last_sub:
+                last_sub = info[rating][task]['creationTimeSeconds']
     return last_sub
 
 
@@ -84,3 +88,27 @@ def getUnsolvedTasksWithHandle(handle):
                 if len(all_tasks[rating]) == 0:
                     all_tasks.pop(rating)
     return all_tasks
+
+
+def getSetOfHundredTasks(handle, count, max_rating):
+    unsolved_tasks = getUnsolvedTasksWithHandle(handle)
+    res = []
+    current_rating = 500
+    while len(res) < count and current_rating < 2501:
+        if current_rating not in unsolved_tasks:
+            current_rating = current_rating + 100
+            continue
+        count_of_section = (max_rating - current_rating + 100) / 100
+        missing_tasks = count - len(res)
+        needed_from_here = (missing_tasks + count_of_section - 1) / count_of_section
+        i = 0
+        for task in unsolved_tasks[current_rating]:
+            tmp = {"rating": current_rating,
+                   'contestId': unsolved_tasks[current_rating][task]['contestId'],
+                   'index': unsolved_tasks[current_rating][task]['index']}
+            res.append(tmp)
+            i = i + 1
+            if i == needed_from_here:
+                break
+        current_rating = current_rating + 100
+    return res
