@@ -46,6 +46,14 @@ def listToStr(values):
     return res
 
 
+def printLeaders(event):
+    leaders = table.getLeaders()
+    writeMessage(event.user_id, 'Десятка лидеров:')
+    for i in range(0, 10):
+        writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
+                     leaders[i][constants.TABLE_COLUMN_ALL_POINTS_])
+
+
 def isBinding(event):
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
             event.user_id in sync_list:
@@ -147,11 +155,7 @@ def isPosition(event, command):
 
 def isLeaders(event, command):
     if command in constants.LEADERS_:
-        leaders = table.getLeaders()
-        writeMessage(event.user_id, 'Десятка лидеров:')
-        for i in range(0, 10):
-            writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
-                         leaders[i][constants.TABLE_COLUMN_ALL_POINTS_])
+        printLeaders(event)
         return True
     return False
 
@@ -174,6 +178,21 @@ def isReset(event, command):
         writeMessage(event.user_id, 'Обновление таблицы может занять некоторое время!')
         table.resetAllUsersInfo()
         writeMessage(event.user_id, 'Таблица полностью обновлена!')
+        return True
+    elif command in constants.RESET_LEADERS_:
+        leaders = table.getLeaders()
+        is_leader = False
+        for leader in leaders:
+            if leader[constants.TABLE_COLUMN_VK_ID_] == str(event.user_id):
+                is_leader = True
+                break
+        if not is_leader:
+            writeMessage(event.user_id, 'Эта команда доступна только действующим лидерам!')
+            return True
+        for leader in leaders:
+            table.resetPointsWithVkId(leader[constants.TABLE_COLUMN_VK_ID_])
+        writeMessage(event.user_id, 'Первая десятка успешно обновлена!')
+        printLeaders(event)
         return True
     return False
 

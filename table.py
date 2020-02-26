@@ -21,10 +21,8 @@ def getAllUsersInfo():
 
 
 def setAllUsersInfo(values):
-    data = {}
-    data['range'] = 'A2:F200'
-    data['majorDimension'] = 'ROWS'
-    data['values'] = sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_ALL_POINTS_]), reverse=True)
+    data = {'range': 'A2:F200', 'majorDimension': 'ROWS',
+            'values': sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_ALL_POINTS_]), reverse=True)}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
 
     secret_constants.service.spreadsheets().values().batchUpdate(
@@ -111,9 +109,7 @@ def changeHeader():
     data['majorDimension'] = 'Columns'
     data['values'] = [['Ники на codeforces'], ['vkId'], ['Общее количество баллов'], ['Очки с кодфорса'],
                       ['Дополнительные баллы'], ['Потраченные баллы']]
-    buv = {}
-    buv['value_input_option'] = 'USER_ENTERED'
-    buv['data'] = data
+    buv = {'value_input_option': 'USER_ENTERED', 'data': data}
     secret_constants.service.spreadsheets().values().batchUpdate(
         spreadsheetId=secret_constants.spreadsheet_id,
         body=buv
