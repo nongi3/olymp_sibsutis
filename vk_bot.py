@@ -84,6 +84,7 @@ def isBinding(event):
             return True
         table.addNewUser(handle, event.user_id)
         writeMessage(event.user_id, 'Отлично, вы прошли проверку! Сейчас внесу вас в таблицу!')
+        sync_list.remove(event.user_id)
         return True
     return False
 
