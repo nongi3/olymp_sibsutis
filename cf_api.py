@@ -74,8 +74,16 @@ def getTimeOfLastSubmissionWithHandle(handle):
     return last_sub
 
 
+def getAllUnsolvedTasks():
+    return getInfoAboutSolvedTasksWithHandle('ruban')
+
+
 def getUnsolvedTasksWithHandle(handle):
     all_tasks = getInfoAboutSolvedTasksWithHandle('ruban')
+    return getUnsolvedTasksWithHandleAndTasks(handle, all_tasks)
+
+
+def getUnsolvedTasksWithHandleAndTasks(handle, all_tasks):
     if 'Error' in all_tasks:
         return {}
     solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
@@ -94,8 +102,8 @@ def getSetOfHundredTasks(handle, count, max_rating):
     unsolved_tasks = getUnsolvedTasksWithHandle(handle)
     res = []
     current_rating = 500
-    while len(res) < count and current_rating < 2501:
-        if current_rating not in unsolved_tasks:
+    while len(res) < count and current_rating < min(max_rating, 2501):
+        if current_rating not in unsolved_tasks or not isStillRelevant(handle, current_rating):
             current_rating = current_rating + 100
             continue
         count_of_section = (max_rating - current_rating + 100) / 100
@@ -108,7 +116,12 @@ def getSetOfHundredTasks(handle, count, max_rating):
                    'index': unsolved_tasks[current_rating][task]['index']}
             res.append(tmp)
             i = i + 1
-            if i == needed_from_here:
+            if i == needed_from_here or len(res) == count:
                 break
         current_rating = current_rating + 100
     return res
+
+
+def isStillRelevant(handle, rating):
+    solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
+    return len(solved_tasks[rating]) < 100

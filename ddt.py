@@ -8,8 +8,10 @@ import table
 
 active_users = []
 
+
 def isRuban(vk_id):
     return vk_id == '5310380'
+
 
 def getAllActiveUsers(number_of_days):
     global active_users
@@ -21,6 +23,7 @@ def getAllActiveUsers(number_of_days):
         unixtime = time.mktime(datetime.datetime.now().timetuple())
         if unixtime - number_of_days * 86400 <= last_submission_time:
             active_users.append(user)
+
 
 def mostDifficultTaskForSomeDay(number_of_days):
     getAllActiveUsers(number_of_days)

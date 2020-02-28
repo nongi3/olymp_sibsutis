@@ -249,7 +249,12 @@ def isFromAdmin(event):
 
 def isTaskList(event, command):
     if command in constants.TRAINING_FIRST_FORMAT_:
-
+        tasks = cf_api.getSetOfHundredTasks(table.getHandleWithVkId(event.user_id), 10, 1500)
+        print("count=" + str(len(tasks)))
+        writeMessage(event.user_id, "Список задач на тренировку:\n")
+        for task in tasks:
+            writeMessage(event.user_id, "https://codeforces.com/problemset/problem/" + str(task["contestId"]) + "/" +
+                         str(task["index"]))
         return True
     return False
 
