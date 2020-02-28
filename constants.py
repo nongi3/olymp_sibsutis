@@ -45,4 +45,6 @@ POSITION_ = ['на каком я месте', 'на каком я месте?', 
 
 LEADERS_ = ['лидеры', 'лучшие', 'десятка']
 
+GIVE_TASK_ = ['дай задачу', 'give a task']
+
 TRAINING_FIRST_FORMAT_ = ['список задач', 'task list']

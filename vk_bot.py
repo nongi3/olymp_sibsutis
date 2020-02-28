@@ -12,6 +12,7 @@ import goods
 import price
 import secret_constants
 import table
+import ddt
 
 vk_session = vk_api.VkApi(token=secret_constants.token)
 
@@ -259,6 +260,14 @@ def isTaskList(event, command):
     return False
 
 
+def isGiveATask(event, command):
+    if command in constants.GIVE_TASK_:
+        writeMessage(event.user_id, "Ссылка на задачу: " +
+                     ddt.theMostSolvedTaskFromUnsolved(table.getHandleWithVkId(event.user_id)))
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isSyncCommand(event, command):
@@ -286,6 +295,8 @@ def isFromUser(event):
     if isLeaders(event, command):
         return True
     if isTaskList(event, command):
+        return True
+    if isGiveATask(event, command):
         return True
     return False
 

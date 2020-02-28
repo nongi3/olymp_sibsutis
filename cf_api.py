@@ -5,6 +5,7 @@ import time
 import urllib.request
 
 import constants
+import table
 
 
 def getInfoAboutSolvedTasksWithHandle(handle):
@@ -122,6 +123,17 @@ def getSetOfHundredTasks(handle, count, max_rating):
     return res
 
 
-def isStillRelevant(handle, rating):
+def countOfTasksWithRating(handle, rating):
     solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
-    return len(solved_tasks[rating]) < 100
+    return len(solved_tasks[rating])
+
+
+def countOfPointsForATaskWithRating(handle, rating):
+    count_of_tasks = countOfTasksWithRating(handle, rating)
+    count_of_tasks = min(count_of_tasks, 100)
+    return ((rating / 100) - 4) * (101 / 2) - \
+           ((rating / 100) - 4) * (100 * 101 / 2 - (100 - count_of_tasks) * (100 - count_of_tasks + 1) / 2) / 100
+
+
+def isStillRelevant(handle, rating):
+    return countOfTasksWithRating(handle, rating) < 100
