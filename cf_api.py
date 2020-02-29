@@ -119,6 +119,8 @@ def getSetOfHundredTasks(handle, count, max_rating):
             i = i + 1
             if i == needed_from_here or len(res) == count:
                 break
+        current_rating = current_rating + 100
+        print(current_rating, len(res))
     return res
 
 
@@ -136,6 +138,3 @@ def countOfPointsForATaskWithRating(handle, rating):
 
 def isStillRelevant(handle, rating):
     return countOfTasksWithRating(handle, rating) < 100
-
-
-getSetOfHundredTasks('fancyfox', 10, 1300)
