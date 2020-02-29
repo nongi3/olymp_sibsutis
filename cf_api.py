@@ -107,9 +107,9 @@ def getSetOfHundredTasks(handle, count, max_rating):
         if current_rating not in unsolved_tasks or not isStillRelevant(handle, current_rating):
             current_rating = current_rating + 100
             continue
-        count_of_section = (max_rating - current_rating + 100) / 100
+        count_of_section = int((max_rating - current_rating + 100) / 100)
         missing_tasks = count - len(res)
-        needed_from_here = (missing_tasks + count_of_section - 1) / count_of_section
+        needed_from_here = int((missing_tasks + count_of_section - 1) / count_of_section)
         i = 0
         for task in unsolved_tasks[current_rating]:
             tmp = {"rating": current_rating,
@@ -119,7 +119,6 @@ def getSetOfHundredTasks(handle, count, max_rating):
             i = i + 1
             if i == needed_from_here or len(res) == count:
                 break
-        current_rating = current_rating + 100
     return res
 
 
@@ -137,3 +136,6 @@ def countOfPointsForATaskWithRating(handle, rating):
 
 def isStillRelevant(handle, rating):
     return countOfTasksWithRating(handle, rating) < 100
+
+
+getSetOfHundredTasks('fancyfox', 10, 1300)
