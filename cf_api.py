@@ -103,7 +103,7 @@ def getSetOfHundredTasks(handle, count, max_rating):
     unsolved_tasks = getUnsolvedTasksWithHandle(handle)
     res = []
     current_rating = 500
-    while len(res) < count and current_rating < min(max_rating, 2501):
+    while len(res) < count and current_rating < min(max_rating+1, 2501):
         if current_rating not in unsolved_tasks or not isStillRelevant(handle, current_rating):
             current_rating = current_rating + 100
             continue
@@ -120,7 +120,6 @@ def getSetOfHundredTasks(handle, count, max_rating):
             if i == needed_from_here or len(res) == count:
                 break
         current_rating = current_rating + 100
-        print(current_rating, len(res))
     return res
 
 

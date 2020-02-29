@@ -108,7 +108,7 @@ def isSyncCommand(event, command):
 
 def isUserLogin(user_id):
     if table.getHandleWithVkId(user_id) == 'None':
-        writeMessage(user_id, 'Пройдите регистрацию, пожалуйста!')
+        writeMessage(user_id, 'Пройдите регистрацию, пожалуйста!\n Для начала введите "sync" (без ковычек)')
         return False
     return True
 
