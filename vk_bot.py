@@ -38,6 +38,18 @@ def makeTopic(name):
         'attachments': []})
 
 
+def help_text(event):
+    writeMessage(event.user_id, 'Список доступных вам команд:\n' +
+                 'лидеры - получение топ 10;\n' +
+                 'пинг - позвать на помощь Бога;\n' +
+                 'рейтинг - узнать текущую позицию в рейтинге;\n' +
+                 'кто пчелок уважает - узнать истину;\n' +
+                 'привет - чтобы быть вежливым;\n' +
+                 'синхра - чтобы начать регистрацию;\n' +
+                 'обнови меня - чтобы обновить свой рейтинг;\n' +
+                 'баланс - текущее количество баллов.')
+
+
 def listToStr(values):
     res = ''
     for i in range(0, len(values)):
@@ -223,15 +235,7 @@ def isPing(event, command):
 
 def isHelp(event, command):
     if command in constants.HELP_:
-        writeMessage(event.user_id, 'Список доступных вам команд:\n' +
-                     'лидеры - получение топ 10;\n' +
-                     'пинг - позвать на помощь Бога;\n' +
-                     'рейтинг - узнать текущую позицию в рейтинге;\n' +
-                     'кто пчелок уважает - узнать истину;\n' +
-                     'привет - чтобы быть вежливым;\n' +
-                     'синхра - чтобы начать регистрацию;\n' +
-                     'обнови меня - чтобы обновить свой рейтинг;\n' +
-                     'баланс - текущее количество баллов.')
+        help_text(event)
         return True
     return False
 
@@ -311,7 +315,7 @@ def main():
             continue
         if isFromUser(event):
             continue
-        writeMessage(event.user_id, 'Я не понимаю вас :-(')
+        help_text(event)
 
 
 main()
