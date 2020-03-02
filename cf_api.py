@@ -137,3 +137,29 @@ def countOfPointsForATaskWithRating(handle, rating):
 
 def isStillRelevant(handle, rating):
     return countOfTasksWithRating(handle, rating) < 100
+
+
+def getCountOfSolvedTaskWithContestId(contest_id, handle):
+    request_url = "https://codeforces.com/api/contest.status?contestId=" + str(contest_id) + "&handle=" + str(handle)
+    response = urllib.request.urlopen(request_url)
+    solved_indexes = {}
+    res = json.loads(response.read())
+    if 'result' not in res:
+        return -1
+    for solution in res['result']:
+        if 'problem' not in solution or 'index' not in solution['problem'] or 'verdict' not in solution:
+            continue
+        solved_indexes[solution['problem']['index']] = solution['verdict']
+    return len(solved_indexes)
+
+
+def getCountOfRatedContestFromTime(handle, start_time):
+    try:
+        request_url = "https://codeforces.com/api/user.rating?handle=" + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {"Error": "can not get info from cf"}
+    if res['status'] != 'OK':
+        return {"Error": "can not get info from cf"}
+    return len(res['result'])

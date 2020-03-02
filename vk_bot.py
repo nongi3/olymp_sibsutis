@@ -38,6 +38,24 @@ def makeTopic(name):
         'attachments': []})
 
 
+def isCompMath(event, command):
+    a = command.split()
+
+    if len(a) < 2 or a[0] != 'вычмат':
+        return False
+    if a[1] in constants.GET_EXEMPTED_:
+        info = ddt.getExempted(table.getHandleWithVkId(event.user_id))
+        if 'Error' in info:
+            return True
+        writeMessage(event.user_id, 'Задачи на динамику: ' + info['dinamic'] + '/6' +
+                     (info['dinamic'] >= 6 if ' - выполнено;' else ';'))
+        writeMessage(event.user_id, 'Задачи на геометрию: ' + info['geometry'] + '/12')
+        writeMessage(event.user_id, 'Задачи на графы: ' + info['graph'] + '/3')
+        writeMessage(event.user_id, 'Участий в контестах: ' + info['contests'] + '/13')
+        return True
+    return False
+
+
 def help_text(event):
     writeMessage(event.user_id, 'Список доступных вам команд:\n' +
                  'лидеры - получение топ 10;\n' +

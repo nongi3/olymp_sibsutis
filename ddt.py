@@ -78,3 +78,18 @@ def theMostSolvedTaskFromUnsolved(handle):
             name = task_name
     return "https://codeforces.com/problemset/problem/" + str(tasks[name]["contestId"]) + '/' \
            + str(tasks[name]["index"])
+
+
+def getExempted(handle):
+    start_time = 1577891404
+    index_of_dinamic_training = '100135'
+    index_of_graph = '100235'
+    index_of_geometry = '100168'
+    solved_dinamic_tasks = cf_api.getCountOfSolvedTaskWithContestId(index_of_dinamic_training, handle)
+    solved_graph_tasks = cf_api.getCountOfSolvedTaskWithContestId(index_of_graph, handle)
+    solved_geometry_tasks = cf_api.getCountOfSolvedTaskWithContestId(index_of_geometry, handle)
+    count_of_rated_contest = cf_api.getCountOfRatedContestFromTime(handle, start_time)
+    return {'dinamic': str(solved_dinamic_tasks),
+            'graph': str(solved_graph_tasks),
+            'geometry': str(solved_geometry_tasks),
+            'contests': str(count_of_rated_contest)}

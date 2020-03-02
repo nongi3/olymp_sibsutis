@@ -47,4 +47,6 @@ LEADERS_ = ['лидеры', 'лучшие', 'десятка']
 
 GIVE_TASK_ = ['дай задачу', 'give a task']
 
+GET_EXEMPTED_ = ['exempted', 'автомат']
+
 TRAINING_FIRST_FORMAT_ = []  # 'список задач', 'task list'
