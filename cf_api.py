@@ -26,17 +26,17 @@ def getInfoAboutSolvedTasksWithHandle(handle):
             continue
         if 'name' not in task['problem']:
             continue
-        if 'rating' not in task['problem']:
-            continue
         if 'tags' in task['problem'] and '*special' in task['problem']['tags']:
             continue
         if 'index' not in task['problem']:
             continue
         index = task['problem']['index']
-        rating = task['problem']['rating']
         task_name = task['problem']['name']
         if task['verdict'] == 'OK':
             if contest_id < 10000:
+                if 'rating' not in task['problem']:
+                    continue
+                rating = task['problem']['rating']
                 if rating not in solved_tasks:
                     solved_tasks[rating] = {}
                 if task_name not in solved_tasks[rating]:
@@ -44,6 +44,9 @@ def getInfoAboutSolvedTasksWithHandle(handle):
                                                        'contestId': contest_id, 'index': index}
                 if task['creationTimeSeconds'] > solved_tasks[rating][task_name]['creationTimeSeconds']:
                     solved_tasks[rating][task_name]['creationTimeSeconds'] = task['creationTimeSeconds']
+            else:
+                solved_tasks[0][task_name] = {'creationTimeSeconds': task['creationTimeSeconds'],
+                                                   'contestId': contest_id, 'index': index}
     return solved_tasks
 
 
@@ -91,6 +94,8 @@ def getUnsolvedTasksWithHandleAndTasks(handle, all_tasks):
     if 'Error' in solved_tasks:
         return {}
     for rating in solved_tasks:
+        if rating == 0:
+            continue
         for name in solved_tasks[rating]:
             if name in all_tasks[rating]:
                 all_tasks[rating].pop(name)
@@ -144,7 +149,7 @@ def getCountOfSolvedTaskWithContestId(contest_id, handle):
     response = urllib.request.urlopen(request_url)
     solved_indexes = {}
     res = json.loads(response.read())
-    if 'result' not in res:
+    if 'result' not in res or res['status'] != 'OK':
         return -1
     for solution in res['result']:
         if 'problem' not in solution or 'index' not in solution['problem'] or 'verdict' not in solution:

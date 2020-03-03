@@ -267,10 +267,20 @@ def isCorrectEvent(event):
     return event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user
 
 
+def isChangeHeader(event, command):
+    if command in constants.RESET_TABLE_HEADER_:
+        table.changeHeader()
+        writeMessage(event.user_id, 'Заголовок таблицы обновлен')
+        return True
+    return False
+
+
 def isFromAdmin(event):
     if str(event.user_id) in constants.ADMIN_VK_ID_:
         command = event.text.lower()
         isExit(event, command)
+        if isChangeHeader(event, command):
+            return True
         return False
     return False
 

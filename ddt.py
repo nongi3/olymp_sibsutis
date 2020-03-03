@@ -38,6 +38,8 @@ def mostDifficultTaskForSomeDay(number_of_days):
             continue
         diff = 0
         for rating in info:
+            if rating == 0:
+                continue
             for task_name in info[rating]:
                 if unixtime - number_of_days * 86400 <= info[rating][task_name] and rating > diff:
                     diff = rating
@@ -63,6 +65,8 @@ def theMostSolvedTaskFromUnsolved(handle):
         if 'Error' in solved_tasks:
             continue
         for rating in solved_tasks:
+            if rating == 0:
+                continue
             for name in solved_tasks[rating]:
                 if rating in solved_tasks_with_handle and name in solved_tasks_with_handle[rating]:
                     continue
