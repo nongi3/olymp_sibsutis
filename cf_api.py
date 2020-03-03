@@ -166,7 +166,8 @@ def getCountOfSolvedTaskWithContestId(contest_id, handle):
     if 'result' not in res or res['status'] != 'OK':
         return -1
     for solution in res['result']:
-        if 'problem' not in solution or 'index' not in solution['problem'] or 'verdict' not in solution:
+        if 'problem' not in solution or 'index' not in solution['problem'] or 'verdict' not in solution \
+                or solution['verdict'] != 'OK':
             continue
         solved_indexes[solution['problem']['index']] = solution['verdict']
     return len(solved_indexes)

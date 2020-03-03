@@ -202,6 +202,9 @@ def isReset(event, command):
         if not table.resetPointsWithVkId(event.user_id):
             writeMessage(event.user_id, 'Данные о вас не найдены в таблице!')
             return True
+        if not table.resetGymPointsWithVkId(event.user_id):
+            writeMessage(event.user_id, 'Данные о вас не найдены в таблице!')
+            return True
         writeMessage(event.user_id, 'Данные успешно обновлены!')
         points = table.getPointsWithVkId(event.user_id)
         writeMessage(event.user_id, 'У вас на счету: ' + str(points) + ' баллов.')
