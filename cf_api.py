@@ -5,7 +5,6 @@ import time
 import urllib.request
 
 import constants
-import table
 
 
 def getInfoAboutSolvedTasksWithHandle(handle):
@@ -48,12 +47,14 @@ def getInfoAboutSolvedTasksWithHandle(handle):
                 if 0 not in solved_tasks:
                     solved_tasks[0] = {}
                 solved_tasks[0][task_name] = {'creationTimeSeconds': task['creationTimeSeconds'],
-                                                   'contestId': contest_id, 'index': index}
+                                              'contestId': contest_id, 'index': index}
     return solved_tasks
 
 
 def findCodeforcesPoints(handle):
     ans = getInfoAboutSolvedTasksWithHandle(handle)
+    if 'Error' in ans:
+        return 0
     res = 0
     for rating in ans:
         if rating == 0:
@@ -63,10 +64,19 @@ def findCodeforcesPoints(handle):
     return int(res)
 
 
+def findGymPoints(handle):
+    info = getInfoAboutSolvedTasksWithHandle(handle)
+    if 0 not in info:
+        return 0
+    return len(info[0])
+
+
 def getVkIdFromCodeforces(handle):
     request_url = 'http://codeforces.com/api/user.info?handles=' + handle
     response = urllib.request.urlopen(request_url)
     res = json.loads(response.read())
+    if res['status'] != 'OK':
+        return 1
     return res['result'][0]['vkId']
 
 

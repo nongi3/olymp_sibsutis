@@ -2,7 +2,8 @@
 # table constants
 TABLE_COLUMN_HANDLE_ = 0
 TABLE_COLUMN_VK_ID_ = 1
-TABLE_COLUMN_CF_POINTS_ = 2
+TABLE_COLUMN_PROBLEMSET_ = 2
+TABLE_COLUMN_GYMS_ = 3
 # end of table constants
 
 # goods constants
