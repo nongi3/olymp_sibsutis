@@ -55,9 +55,11 @@ def getInfoAboutSolvedTasksWithHandle(handle):
 def findCodeforcesPoints(handle):
     ans = getInfoAboutSolvedTasksWithHandle(handle)
     res = 0
-    for i in ans:
-        d = min(len(ans[i]), 100)
-        res += ((i / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
+    for rating in ans:
+        if rating == 0:
+            continue
+        d = min(len(ans[rating]), 100)
+        res += ((rating / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     return int(res)
 
 
