@@ -45,6 +45,8 @@ def getInfoAboutSolvedTasksWithHandle(handle):
                 if task['creationTimeSeconds'] > solved_tasks[rating][task_name]['creationTimeSeconds']:
                     solved_tasks[rating][task_name]['creationTimeSeconds'] = task['creationTimeSeconds']
             else:
+                if 0 not in solved_tasks:
+                    solved_tasks[0] = {}
                 solved_tasks[0][task_name] = {'creationTimeSeconds': task['creationTimeSeconds'],
                                                    'contestId': contest_id, 'index': index}
     return solved_tasks
