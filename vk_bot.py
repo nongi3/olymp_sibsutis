@@ -87,7 +87,7 @@ def printLeaders(event):
     writeMessage(event.user_id, 'Десятка лидеров:')
     for i in range(0, 10):
         writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
-                     leaders[i][constants.TABLE_COLUMN_ALL_POINTS_])
+                     leaders[i][constants.TABLE_COLUMN_CF_POINTS_])
 
 
 def isBinding(event):

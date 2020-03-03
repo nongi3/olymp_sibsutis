@@ -14,15 +14,15 @@ import cf_api
 def getAllUsersInfo():
     values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.spreadsheet_id,
-        range='A2:F200',
+        range='A2:C200',
         majorDimension='ROWS'
     ).execute()
     return values['values']
 
 
 def setAllUsersInfo(values):
-    data = {'range': 'A2:F200', 'majorDimension': 'ROWS',
-            'values': sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_ALL_POINTS_]), reverse=True)}
+    data = {'range': 'A2:C200', 'majorDimension': 'ROWS',
+            'values': sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_CF_POINTS_]), reverse=True)}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
 
     secret_constants.service.spreadsheets().values().batchUpdate(
@@ -35,61 +35,39 @@ def getPointsWithHandle(handle):
     values = getAllUsersInfo()
     for value in values:
         if value[constants.TABLE_COLUMN_HANDLE_] == handle:
-            return value[constants.TABLE_COLUMN_ALL_POINTS_]
+            return value[constants.TABLE_COLUMN_CF_POINTS_]
     return -1
 
 
-def getPointsWithVkId(vkId):
+def getPointsWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
-            return int(value[constants.TABLE_COLUMN_ALL_POINTS_])
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
+            return int(value[constants.TABLE_COLUMN_CF_POINTS_])
     return -1
 
 
-def setSpentPointsWithVkId(vkId, points):
+def resetPointsWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
-            value[constants.TABLE_COLUMN_SPENT_POINTS_] = str(int(value[constants.TABLE_COLUMN_SPENT_POINTS_]) +
-                                                              int(points))
-            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
-                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
-            setAllUsersInfo(values)
-            break
-
-
-def resetPointsWithVkId(vkId):
-    values = getAllUsersInfo()
-    for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
             value[constants.TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
-            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
-                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
             setAllUsersInfo(values)
             return True
     return False
 
 
-def getHandleWithVkId(vkId):
+def getHandleWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
             return value[constants.TABLE_COLUMN_HANDLE_]
     return "None"
 
 
-def addNewUser(handle, vkId):
+def addNewUser(handle, vk_id):
     values = getAllUsersInfo()
-    tmp = [handle, vkId]
-    codeforces_points = cf_api.findCodeforcesPoints(handle)
-    additional_points = 0
-    tmp.append(str(codeforces_points))
-    tmp.append(str(codeforces_points))
-    tmp.append(str(additional_points))
-    tmp.append(str(0))
+    tmp = [handle, vk_id, cf_api.findCodeforcesPoints(handle)]
     values.append(tmp)
     setAllUsersInfo(values)
 
@@ -104,11 +82,8 @@ def getHandles():
 
 
 def changeHeader():
-    data = {}
-    data['range'] = 'A1:F1'
-    data['majorDimension'] = 'Columns'
-    data['values'] = [['Ники на codeforces'], ['vkId'], ['Общее количество баллов'], ['Очки с кодфорса'],
-                      ['Дополнительные баллы'], ['Потраченные баллы']]
+    data = {'range': 'A1:С1', 'majorDimension': 'Columns',
+            'values': [['Ники на codeforces'], ['vk_id'], ['Очки архива']]}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
     secret_constants.service.spreadsheets().values().batchUpdate(
         spreadsheetId=secret_constants.spreadsheet_id,
@@ -116,43 +91,27 @@ def changeHeader():
     ).execute()
 
 
-def afterSuccseccCanselingDivTo(handle, sp):
-    values = getAllUsersInfo()
-    for value in values:
-        if value[constants.TABLE_COLUMN_HANDLE_] == handle:
-            value[constants.TABLE_COLUMN_SPENT_POINTS_] = str(int(value[constants.TABLE_COLUMN_SPENT_POINTS_]) -
-                                                              int(sp))
-            value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
-                                                            int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                            int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
-            setAllUsersInfo(values)
-            break
-
-
 def resetAllUsersInfo():
     values = getAllUsersInfo()
     for value in values:
         value[constants.TABLE_COLUMN_CF_POINTS_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
-        value[constants.TABLE_COLUMN_ALL_POINTS_] = str(int(value[constants.TABLE_COLUMN_CF_POINTS_]) +
-                                                        int(value[constants.TABLE_COLUMN_ADDITIONAL_POINTS_]) -
-                                                        int(value[constants.TABLE_COLUMN_SPENT_POINTS_]))
     setAllUsersInfo(values)
 
 
-def isUserAlreadyExist(vkId):
+def isUserAlreadyExist(vk_id):
     values = getAllUsersInfo()
     for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vkId):
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
             return True
     return False
 
 
-def getPositionWithVkId(vkId):
+def getPositionWithVkId(vk_id):
     values = getAllUsersInfo()
     pos = 0
     for value in values:
         pos = pos + 1
-        if str(vkId) == str(value[constants.TABLE_COLUMN_VK_ID_]):
+        if str(vk_id) == str(value[constants.TABLE_COLUMN_VK_ID_]):
             return pos
     return -1
 
