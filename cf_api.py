@@ -162,4 +162,8 @@ def getCountOfRatedContestFromTime(handle, start_time):
         return {"Error": "can not get info from cf"}
     if res['status'] != 'OK':
         return {"Error": "can not get info from cf"}
-    return len(res['result'])
+    count_of_contests = 0
+    for contest in res['result']:
+        if contest['ratingUpdateTimeSeconds'] >= start_time:
+            count_of_contests = count_of_contests + 1
+    return count_of_contests

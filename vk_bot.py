@@ -40,7 +40,6 @@ def makeTopic(name):
 
 def isCompMath(event, command):
     a = command.split()
-
     if len(a) < 2 or a[0] != 'вычмат':
         return False
     if a[1] in constants.GET_EXEMPTED_:
@@ -48,10 +47,16 @@ def isCompMath(event, command):
         if 'Error' in info:
             return True
         writeMessage(event.user_id, 'Задачи на динамику: ' + info['dinamic'] + '/6' +
-                     (info['dinamic'] >= 6 if ' - выполнено;' else ';'))
-        writeMessage(event.user_id, 'Задачи на геометрию: ' + info['geometry'] + '/12')
-        writeMessage(event.user_id, 'Задачи на графы: ' + info['graph'] + '/3')
-        writeMessage(event.user_id, 'Участий в контестах: ' + info['contests'] + '/13')
+                     (' - выполнено;' if int(info['dinamic']) >= 6 else ';'))
+        writeMessage(event.user_id, 'Задачи на геометрию: ' + info['geometry'] + '/12' +
+                     (' - выполнено;' if int(info['geometry']) >= 12 else ';'))
+        writeMessage(event.user_id, 'Задачи на графы: ' + info['graph'] + '/3' +
+                     (' - выполнено;' if int(info['graph']) >= 3 else ';'))
+        writeMessage(event.user_id, 'Участий в контестах: ' + info['contests'] + '/13' +
+                     (' - выполнено.' if int(info['contests']) >= 13 else '.'))
+        if int(info['dinamic']) >= 6 and int(info['geometry']) >= 12 and int(info['graph']) >= 3 \
+                and int(info['contests']) >= 13:
+            writeMessage(event.user_id, 'Вы сделали достаточно для автомата!')
         return True
     return False
 
@@ -319,6 +324,8 @@ def isFromUser(event):
     if isTaskList(event, command):
         return True
     if isGiveATask(event, command):
+        return True
+    if isCompMath(event, command):
         return True
     return False
 
