@@ -23,14 +23,12 @@ def getInfoAboutSolvedTasksWithHandle(handle):
         contest_id = task['contestId']
         if 'problem' not in task:
             continue
-        if 'name' not in task['problem']:
-            continue
         if 'tags' in task['problem'] and '*special' in task['problem']['tags']:
             continue
         if 'index' not in task['problem']:
             continue
         index = task['problem']['index']
-        task_name = task['problem']['name']
+        task_name = str(contest_id) + str(index)
         if task['verdict'] == 'OK':
             if contest_id < 10000:
                 if 'rating' not in task['problem']:
@@ -187,3 +185,21 @@ def getCountOfRatedContestFromTime(handle, start_time):
         if contest['ratingUpdateTimeSeconds'] >= start_time:
             count_of_contests = count_of_contests + 1
     return count_of_contests
+
+
+def getTaskWithTagAndRating(handle, tag, rating):
+    try:
+        request_url = "https://codeforces.com/api/problemset.problems?tags=" + str(tag)
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {"Error": "can not get info from cf"}
+    if 'status' not in res or res['status'] != 'OK' or 'result' not in res or 'problems' not in res['result']:
+        return {"Error": "can not get info from cf"}
+    solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
+    for task in res['result']['problems']:
+        if 'rating' not in task or 'contestId' not in task or 'index' not in task:
+            continue
+        if task['rating'] == rating and (str(task['contestId']) + str(task['index'])) not in solved_tasks[rating]:
+            return "https://codeforces.com/problemset/problem/" + str(task['contestId']) + '/' + str(task['index'])
+    return {"Error": "there no unsolved tasks with this rating and tag"}

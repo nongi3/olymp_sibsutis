@@ -300,12 +300,37 @@ def isTaskList(event, command):
     return False
 
 
+def checkOnGiveTaskCommand(command):
+    split_command = command.split()
+    if len(split_command) < 2 or len(split_command) > 3 \
+            or (str(split_command[0]) + str(split_command[1])) not in constants.GIVE_TASK_:
+        return "Not give task command"
+    if len(split_command) == 2:
+        return "Correct 2"
+    if split_command[2].isdigit() and 500 <= int(split_command[2]) <= 3000 and int(split_command[2]) % 100 == 0:
+        return "Correct 3"
+    return "Incorrect parameters"
+
+
 def isGiveATask(event, command):
-    if command in constants.GIVE_TASK_:
+    check = checkOnGiveTaskCommand(command)
+    if check == 'Not give task command':
+        return False
+    if check == 'Correct 2':
         writeMessage(event.user_id, "Ссылка на задачу: " +
                      ddt.theMostSolvedTaskFromUnsolved(table.getHandleWithVkId(event.user_id)))
-        return True
-    return False
+    elif check == 'Correct 3':
+        handle = table.getHandleWithVkId(event.user_id)
+        rating = command.split()[2]
+        if not cf_api.isStillRelevant(handle, rating):
+            writeMessage(event.user_id, 'Задача с таким рейтингом больше не принесет вам баллов! B-)')
+            return True
+        url = cf_api.getTaskWithTagAndRating(handle, '', rating)
+        if 'Error' in url:
+            writeMessage(event.user_id, 'Не удалось получить задачу для вас, извините :-(')
+            return True
+        writeMessage(event.user_id, "Ссылка на задачу: " + url)
+    return True
 
 
 def isFromUser(event):

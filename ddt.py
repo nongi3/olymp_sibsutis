@@ -13,7 +13,7 @@ def isRuban(vk_id):
     return vk_id == '5310380'
 
 
-def getAllActiveUsers(number_of_days):
+def getAllActiveUsers(number_of_days):    # probably not work
     global active_users
     active_users = []
     table.getAllUsersInfo()
@@ -25,7 +25,7 @@ def getAllActiveUsers(number_of_days):
             active_users.append(user)
 
 
-def mostDifficultTaskForSomeDay(number_of_days):
+def mostDifficultTaskForSomeDay(number_of_days):    # probably not work
     getAllActiveUsers(number_of_days)
     res = {}
     unixtime = time.mktime(datetime.datetime.now().timetuple())
