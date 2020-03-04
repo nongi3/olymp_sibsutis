@@ -286,13 +286,17 @@ def onDelete(event, command):
         if len(tasks) == 0:
             writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
             return True
+        lst = []
         for rating in tasks:
             for name in tasks[rating]:
-                writeMessage(event.user_id, "https://codeforces.com/problemset/problem/" +
-                             str(tasks[rating][name]["contestId"]) + "/"
-                             + str(tasks[rating][name]["index"]))
-                return True
-        writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
+                lst.append("https://codeforces.com/problemset/problem/" +
+                           str(tasks[rating][name]["contestId"]) + "/"
+                           + str(tasks[rating][name]["index"]))
+        if len(lst) == 0:
+            writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
+            return True
+        ind = random.randint(0, len(lst) - 1)
+        writeMessage(event.user_id, lst[ind])
         return True
     return False
 
