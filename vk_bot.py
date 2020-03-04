@@ -302,26 +302,27 @@ def isTaskList(event, command):
 
 def checkOnGiveTaskCommand(command):
     split_command = command.split()
-    if len(split_command) < 2 or len(split_command) > 3 \
-            or (str(split_command[0]) + str(split_command[1])) not in constants.GIVE_TASK_:
+    if len(split_command) < 1 or len(split_command) > 2 \
+            or (str(split_command[0])) not in constants.GIVE_TASK_:
         return "Not give task command"
-    if len(split_command) == 2:
+    if len(split_command) == 1:
+        return "Correct 1"
+    if split_command[1].isdigit() and 500 <= int(split_command[1]) <= 3000 and int(split_command[1]) % 100 == 0:
         return "Correct 2"
-    if split_command[2].isdigit() and 500 <= int(split_command[2]) <= 3000 and int(split_command[2]) % 100 == 0:
-        return "Correct 3"
     return "Incorrect parameters"
 
 
 def isGiveATask(event, command):
     check = checkOnGiveTaskCommand(command)
+    print(command)
     if check == 'Not give task command':
         return False
-    if check == 'Correct 2':
+    if check == 'Correct 1':
         writeMessage(event.user_id, "Ссылка на задачу: " +
                      ddt.theMostSolvedTaskFromUnsolved(table.getHandleWithVkId(event.user_id)))
-    elif check == 'Correct 3':
+    elif check == 'Correct 2':
         handle = table.getHandleWithVkId(event.user_id)
-        rating = command.split()[2]
+        rating = int(command.split()[1])
         if not cf_api.isStillRelevant(handle, rating):
             writeMessage(event.user_id, 'Задача с таким рейтингом больше не принесет вам баллов! B-)')
             return True
@@ -330,6 +331,8 @@ def isGiveATask(event, command):
             writeMessage(event.user_id, 'Не удалось получить задачу для вас, извините :-(')
             return True
         writeMessage(event.user_id, "Ссылка на задачу: " + url)
+    else:
+        writeMessage(event.user_id, 'Вы ввели неверные параметры!')
     return True
 
 

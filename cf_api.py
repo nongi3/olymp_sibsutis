@@ -142,7 +142,9 @@ def getSetOfHundredTasks(handle, count, max_rating):
 
 def countOfTasksWithRating(handle, rating):
     solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
-    return len(solved_tasks[rating])
+    if int(rating) not in solved_tasks:
+        return 0
+    return len(solved_tasks[int(rating)])
 
 
 def countOfPointsForATaskWithRating(handle, rating):

@@ -45,7 +45,7 @@ POSITION_ = ['на каком я месте', 'на каком я месте?', 
 
 LEADERS_ = ['лидеры', 'лучшие', 'десятка']
 
-GIVE_TASK_ = ['дай задачу', 'give a task']
+GIVE_TASK_ = ['дай_задачу', 'give_a_task']
 
 GET_EXEMPTED_ = ['exempted', 'автомат']
 
