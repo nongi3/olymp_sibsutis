@@ -281,12 +281,18 @@ def isChangeHeader(event, command):
 
 
 def onDelete(event, command):
-    if command == 'вот же петуч':
+    if command == 'вот же пету':
         tasks = ddt.specialForYou()
-        for task in tasks:
-            writeMessage(event.user_id, "https://codeforces.com/problemset/problem/" + str(task["contestId"]) + "/" +
-                         str(task["index"]))
-            break
+        if len(tasks) == 0:
+            writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
+            return True
+        for rating in tasks:
+            for name in tasks[rating]:
+                writeMessage(event.user_id, "https://codeforces.com/problemset/problem/" +
+                             str(tasks[rating][name]["contestId"]) + "/"
+                             + str(tasks[rating][name]["index"]))
+                return True
+        writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
         return True
     return False
 
