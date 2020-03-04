@@ -97,3 +97,8 @@ def getExempted(handle):
             'graph': str(solved_graph_tasks),
             'geometry': str(solved_geometry_tasks),
             'contests': str(count_of_rated_contest)}
+
+
+def specialForYou():
+    tasks = cf_api.getInfoAboutSolvedTasksWithHandle('justBoss')
+    return cf_api.getUnsolvedTasksWithHandleAndTasks('fancyFox', tasks)

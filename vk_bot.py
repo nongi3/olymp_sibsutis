@@ -280,11 +280,24 @@ def isChangeHeader(event, command):
     return False
 
 
+def onDelete(event, command):
+    if command == 'вот же петуч':
+        tasks = ddt.specialForYou()
+        for task in tasks:
+            writeMessage(event.user_id, "https://codeforces.com/problemset/problem/" + str(task["contestId"]) + "/" +
+                         str(task["index"]))
+            break
+        return True
+    return False
+
+
 def isFromAdmin(event):
     if str(event.user_id) in constants.ADMIN_VK_ID_:
         command = event.text.lower()
         isExit(event, command)
         if isChangeHeader(event, command):
+            return True
+        if onDelete(event, command):
             return True
         return False
     return False
