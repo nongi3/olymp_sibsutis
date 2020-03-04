@@ -70,7 +70,9 @@ def help_text(event):
                  'привет - чтобы быть вежливым;\n' +
                  'синхра - чтобы начать регистрацию;\n' +
                  'обнови меня - чтобы обновить свой рейтинг;\n' +
-                 'баланс - текущее количество баллов.')
+                 'баланс - текущее количество баллов;\n + '
+                 'дай_задачу - самая сдаваемая задача среди участников программы...\n' +
+                 'дай_задачу rating - для получения задачи определенного рейтинга')
 
 
 def listToStr(values):
@@ -314,7 +316,6 @@ def checkOnGiveTaskCommand(command):
 
 def isGiveATask(event, command):
     check = checkOnGiveTaskCommand(command)
-    print(command)
     if check == 'Not give task command':
         return False
     if check == 'Correct 1':
