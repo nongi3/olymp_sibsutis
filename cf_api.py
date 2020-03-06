@@ -113,7 +113,7 @@ def getUnsolvedTasksWithHandleAndTasks(handle, all_tasks):
         if rating == 0:
             continue
         for name in solved_tasks[rating]:
-            if name in all_tasks[rating]:
+            if rating in all_tasks and name in all_tasks[rating]:
                 all_tasks[rating].pop(name)
                 if len(all_tasks[rating]) == 0:
                     all_tasks.pop(rating)

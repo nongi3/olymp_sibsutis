@@ -49,4 +49,4 @@ GIVE_TASK_ = ['дай_задачу', 'give_a_task']
 
 GET_EXEMPTED_ = ['exempted', 'автомат']
 
-TRAINING_FIRST_FORMAT_ = []  # 'список задач', 'task list'
+TRAINING_FIRST_FORMAT_ = ['список задач', 'task list']
