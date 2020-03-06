@@ -315,7 +315,7 @@ def isFromAdmin(event):
 
 def isTaskList(event, command):
     if command in constants.TRAINING_FIRST_FORMAT_:
-        tasks = ddt.somes_unsolved_tasks()
+        tasks = ddt.some_unsolved_tasks()
         for task in tasks:
             writeMessage(event.user_id, task)
         return True
