@@ -28,7 +28,9 @@ def getInfoAboutSolvedTasksWithHandle(handle):
         if 'index' not in task['problem']:
             continue
         index = task['problem']['index']
-        task_name = str(contest_id) + str(index)
+        if 'name' not in task['problem']:
+            continue
+        task_name = task['problem']['name']
         if 'verdict' not in task:
             continue
         if task['verdict'] == 'OK':
