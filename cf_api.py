@@ -225,7 +225,7 @@ def getCountOfSubmissionsForAMonth(handle):
     for task in res['result']:
         if 'creationTimeSeconds' not in task:
             continue
-        if task['creationTimeSeconds'] < one_week_ago_time:
+        if task['creationTimeSeconds'] < one_month_ago_time:
             break
         count_of_sub += 1
     return count_of_sub
