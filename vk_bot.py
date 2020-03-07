@@ -358,7 +358,7 @@ def isGiveATask(event, command):
 
 
 def isActiveUser(event):
-    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) < 100
+    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) >= 100
 
 
 def isFromUser(event):
