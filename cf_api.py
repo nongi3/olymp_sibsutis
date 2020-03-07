@@ -209,3 +209,23 @@ def getTaskWithTagAndRating(handle, tag, rating):
         if task['rating'] == rating and (str(task['contestId']) + str(task['index'])) not in solved_tasks[rating]:
             return "https://codeforces.com/problemset/problem/" + str(task['contestId']) + '/' + str(task['index'])
     return {"Error": "there no unsolved tasks with this rating and tag"}
+
+
+def getCountOfSubmissionsForAMonth(handle):
+    try:
+        request_url = 'http://codeforces.com/api/user.status?handle=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {"Error": "can not get info from cf"}
+    if 'result' not in res:
+        return {"Error": "can not find result in json"}
+    one_month_ago_time = time.mktime(datetime.datetime.now().timetuple()) - 86400 * 30
+    count_of_sub = 0
+    for task in res['result']:
+        if 'creationTimeSeconds' not in task:
+            continue
+        if task['creationTimeSeconds'] < one_week_ago_time:
+            break
+        count_of_sub += 1
+    return count_of_sub

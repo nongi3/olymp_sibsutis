@@ -281,7 +281,7 @@ def isChangeHeader(event, command):
 
 
 def onDelete(event, command):
-    if command == 'вот же пету':
+    if command == 'вот же петуч':
         tasks = ddt.specialForYou()
         if len(tasks) == 0:
             writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
@@ -357,11 +357,18 @@ def isGiveATask(event, command):
     return True
 
 
+def isActiveUser(event):
+    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) < 100
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isSyncCommand(event, command):
         return True
     if not isUserLogin(event.user_id):
+        return True
+    if not isActiveUser(event):
+        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
         return True
     if isGood(event, command):
         return True
