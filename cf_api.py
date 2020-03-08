@@ -204,9 +204,9 @@ def getTaskWithTagAndRating(handle, tag, rating):
         return {"Error": "can not get info from cf"}
     solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
     for task in res['result']['problems']:
-        if 'rating' not in task or 'contestId' not in task or 'index' not in task:
+        if 'rating' not in task or 'contestId' not in task or 'index' not in task or 'name' not in task:
             continue
-        if task['rating'] == rating and (str(task['contestId']) + str(task['index'])) not in solved_tasks[rating]:
+        if task['rating'] == rating and task['name'] not in solved_tasks[rating]:
             return "https://codeforces.com/problemset/problem/" + str(task['contestId']) + '/' + str(task['index'])
     return {"Error": "there no unsolved tasks with this rating and tag"}
 
