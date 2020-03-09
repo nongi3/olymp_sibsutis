@@ -358,7 +358,7 @@ def isGiveATask(event, command):
 
 
 def isActiveUser(event):
-    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) >= 100
+    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) >= 60
 
 
 def isFromUser(event):
@@ -366,9 +366,6 @@ def isFromUser(event):
     if isSyncCommand(event, command):
         return True
     if not isUserLogin(event.user_id):
-        return True
-    if not isActiveUser(event):
-        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
         return True
     if isGood(event, command):
         return True
@@ -378,23 +375,26 @@ def isFromUser(event):
         return True
     if isPosition(event, command):
         return True
-    if isReset(event, command):
-        return True
     if isGreeting(event, command):
         return True
     if isRespect(event, command):
-        return True
-    if isPing(event, command):
         return True
     if isHelp(event, command):
         return True
     if isLeaders(event, command):
         return True
-    if isTaskList(event, command):
+    if isCompMath(event, command):
+        return True
+    if not isActiveUser(event):
+        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
         return True
     if isGiveATask(event, command):
         return True
-    if isCompMath(event, command):
+    if isReset(event, command):
+        return True
+    if isPing(event, command):
+        return True
+    if isTaskList(event, command):
         return True
     return False
 
