@@ -8,8 +8,6 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 
 import cf_api
 import constants
-import goods
-import price
 import secret_constants
 import table
 import ddt
