@@ -139,13 +139,3 @@ def some_unsolved_tasks():
             "https://codeforces.com/problemset/problem/376/A",
             "https://codeforces.com/problemset/problem/221/A",
             "https://codeforces.com/problemset/problem/265/B"]
-
-
-# def specialForYou():
-#     tasks = cf_api.getInfoAboutSolvedTasksWithHandle('ruban')
-#     cf_api.getUnsolvedTasksWithHandleAndTasks('nongi', tasks)
-#     mn = 100000
-#     for rating in tasks:
-#         if 0 < rating < mn:
-#             mn = rating
-#     return (tasks[mn])

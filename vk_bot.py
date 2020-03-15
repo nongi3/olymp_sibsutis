@@ -359,6 +359,26 @@ def isActiveUser(event):
     return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) >= 60
 
 
+def checkOnCountOfSolvedTasksCommand(command):
+    words = command.split()
+    if len(words) != 2:
+        return False
+    if not words[1].isdigit():
+        return False
+    rating = int(words[1])
+    return words[0] in constants.COUNT_OF_SOLVED_TASKS_ and rating % 100 == 0 and 500 < rating < 3000
+
+
+def isCountOfSolvedTasks(event, command):
+    if checkOnCountOfSolvedTasksCommand(command):
+        handle = table.getHandleWithVkId(event.user_id)
+        rating = command.split()[1]
+        count_of_solved_tasks = cf_api.countOfTasksWithRating(handle, rating)
+        writeMessage(event.user_id, 'Вы решили ' + str(count_of_solved_tasks) + ' задач с рейтингом ' + str(rating))
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isSyncCommand(event, command):
@@ -386,6 +406,8 @@ def isFromUser(event):
     # if not isActiveUser(event):           # return back later
     #     writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
     #     return True
+    if isCountOfSolvedTasks(event, command):
+        return True
     if isGiveATask(event, command):
         return True
     if isReset(event, command):

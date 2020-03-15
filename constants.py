@@ -50,3 +50,5 @@ GIVE_TASK_ = ['дай_задачу', 'give_a_task']
 GET_EXEMPTED_ = ['exempted', 'автомат']
 
 TRAINING_FIRST_FORMAT_ = ['список задач', 'task list']
+
+COUNT_OF_SOLVED_TASKS_ = ['количество_сданных_задач', 'count_of_solved_tasks']
