@@ -383,9 +383,9 @@ def isFromUser(event):
         return True
     if isCompMath(event, command):
         return True
-    if not isActiveUser(event):
-        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
-        return True
+    # if not isActiveUser(event):           # return back later
+    #     writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
+    #     return True
     if isGiveATask(event, command):
         return True
     if isReset(event, command):
