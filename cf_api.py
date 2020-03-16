@@ -1,6 +1,7 @@
 import datetime
 import functools
 import json
+import random
 import time
 import urllib.request
 
@@ -203,12 +204,18 @@ def getTaskWithTagAndRating(handle, tag, rating):
     if 'status' not in res or res['status'] != 'OK' or 'result' not in res or 'problems' not in res['result']:
         return {"Error": "can not get info from cf"}
     solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
+    list_of_unsolved_tasks = []
     for task in res['result']['problems']:
         if 'rating' not in task or 'contestId' not in task or 'index' not in task or 'name' not in task:
             continue
         if task['rating'] == rating and task['name'] not in solved_tasks[rating]:
-            return "https://codeforces.com/problemset/problem/" + str(task['contestId']) + '/' + str(task['index'])
-    return {"Error": "there no unsolved tasks with this rating and tag"}
+            list_of_unsolved_tasks.append("https://codeforces.com/problemset/problem/" + str(task['contestId']) +
+                                          '/' + str(task['index']))
+    size = len(list_of_unsolved_tasks)
+    if size == 0:
+        return {"Error": "there no unsolved tasks with this rating and tag"}
+    position = random.randint(0, max(size - 1, 0))
+    return list_of_unsolved_tasks[position]
 
 
 def getCountOfSubmissionsForAMonth(handle):
