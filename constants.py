@@ -13,6 +13,11 @@ GOODS_COLUMN = {'div1': 'B', 'див1': 'B',
                 'lecture': 'E', 'лекция': 'E'}
 # end of goods constants
 
+# cf_api_unittests constants
+wrong_handle = 'qwe123r3r3r3r3e2e2'
+correct_handle = 'nongi'
+# end of cf_api_unittests constants
+
 RESET_TABLE_HEADER_ = ['обнови заголовок таблицы']
 
 bad_words = ['твердохлеб', 'петуч', 'лох', 'кока', 'соси', 'козел программный']

@@ -51,7 +51,10 @@ def resetPointsWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
         if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
-            value[constants.TABLE_COLUMN_PROBLEMSET_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
+            points = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
+            if points < 0:
+                return False
+            value[constants.TABLE_COLUMN_PROBLEMSET_] = points
             setAllUsersInfo(values)
             return True
     return False
@@ -61,7 +64,10 @@ def resetGymPointsWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
         if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
-            value[constants.TABLE_COLUMN_GYMS_] = cf_api.findGymPoints(value[constants.TABLE_COLUMN_HANDLE_])
+            gym_points = cf_api.findGymPoints(value[constants.TABLE_COLUMN_HANDLE_])
+            if gym_points == -1:
+                return False
+            value[constants.TABLE_COLUMN_GYMS_] = gym_points
             setAllUsersInfo(values)
             return True
     return False
@@ -104,8 +110,12 @@ def changeHeader():
 def resetAllUsersInfo():
     values = getAllUsersInfo()
     for value in values:
-        value[constants.TABLE_COLUMN_PROBLEMSET_] = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
-        value[constants.TABLE_COLUMN_GYMS_] = cf_api.findGymPoints(value[constants.TABLE_COLUMN_HANDLE_])
+        points = cf_api.findCodeforcesPoints(value[constants.TABLE_COLUMN_HANDLE_])
+        if points > -1:
+            value[constants.TABLE_COLUMN_PROBLEMSET_] = points
+        gym_points = cf_api.findGymPoints(value[constants.TABLE_COLUMN_HANDLE_])
+        if gym_points > -1:
+            value[constants.TABLE_COLUMN_GYMS_] = gym_points
     setAllUsersInfo(values)
 
 

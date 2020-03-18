@@ -111,7 +111,10 @@ def isBinding(event):
         if 'vkId' not in res['result'][0]:
             writeMessage(event.user_id, 'Возникла ошибка при получении данных от cf API')
             return True
-        vk_id_from_cf = res['result'][0]['vkId']
+        vk_id_from_cf = cf_api.getVkIdFromCodeforces(handle)
+        if vk_id_from_cf == 'Error':
+            writeMessage(event.user_id, 'Возникла ошибка при обращении к cf api. Попробуйте позже!')
+            return True
         if str(event.user_id) != str(vk_id_from_cf):
             writeMessage(event.user_id, 'Страница вк в профиле с указанным хэндлом отличается от вашей!')
             return True

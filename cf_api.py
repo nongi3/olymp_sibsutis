@@ -38,7 +38,7 @@ def getInfoAboutSolvedTasksWithHandle(handle):
             if contest_id < 10000:
                 if 'rating' not in task['problem']:
                     continue
-                rating = task['problem']['rating']
+                rating = int(task['problem']['rating'])
                 if rating not in solved_tasks:
                     solved_tasks[rating] = {}
                 if task_name not in solved_tasks[rating]:
@@ -57,30 +57,35 @@ def getInfoAboutSolvedTasksWithHandle(handle):
 def findCodeforcesPoints(handle):
     ans = getInfoAboutSolvedTasksWithHandle(handle)
     if 'Error' in ans:
-        return 0
+        return -1
     res = 0
     for rating in ans:
         if rating == 0:
             continue
         d = min(len(ans[rating]), 100)
-        res += ((rating / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
+        res += ((int(rating) / 100) - 4) * (100 * 101 / 2 - (100 - d) * (100 - d + 1) / 2) / 100
     return int(res)
 
 
 def findGymPoints(handle):
     info = getInfoAboutSolvedTasksWithHandle(handle)
+    if 'Error' in info:
+        return -1
     if 0 not in info:
         return 0
     return len(info[0])
 
 
 def getVkIdFromCodeforces(handle):
-    request_url = 'http://codeforces.com/api/user.info?handles=' + handle
-    response = urllib.request.urlopen(request_url)
-    res = json.loads(response.read())
+    try:
+        request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return 'Error'
     if res['status'] != 'OK':
-        return 1
-    return res['result'][0]['vkId']
+        return 'Error'
+    return str(res['result'][0]['vkId'])
 
 
 def getTimeOfLastSubmissionWithHandle(handle):
@@ -111,8 +116,6 @@ def getUnsolvedTasksWithHandleAndTasks(handle, all_tasks):
     if 'Error' in solved_tasks:
         return {}
     for rating in solved_tasks:
-        if rating == 0:
-            continue
         for name in solved_tasks[rating]:
             if rating in all_tasks and name in all_tasks[rating]:
                 all_tasks[rating].pop(name)
@@ -123,6 +126,8 @@ def getUnsolvedTasksWithHandleAndTasks(handle, all_tasks):
 
 def getSetOfHundredTasks(handle, count, max_rating):
     unsolved_tasks = getUnsolvedTasksWithHandle(handle)
+    if unsolved_tasks == {}:
+        return []
     res = []
     current_rating = 500
     while len(res) < count and current_rating < min(max_rating+1, 2501):
@@ -153,10 +158,14 @@ def countOfTasksWithRating(handle, rating):
 
 
 def countOfPointsForATaskWithRating(handle, rating):
-    count_of_tasks = countOfTasksWithRating(handle, rating)
-    count_of_tasks = min(count_of_tasks, 100)
-    return ((rating / 100) - 4) * (101 / 2) - \
-           ((rating / 100) - 4) * (100 * 101 / 2 - (100 - count_of_tasks) * (100 - count_of_tasks + 1) / 2) / 100
+    count_of_tasks = min(countOfTasksWithRating(handle, rating), 100)
+    if rating % 100 != 0 or rating < 500:
+        return 0
+    will_be_collected = ((int(rating) / 100) - 4) * (100 * 101 / 2 - (100 - count_of_tasks - 1) *
+                                                     (100 - count_of_tasks) / 2) / 100
+    already_collected_points = ((int(rating) / 100) - 4) * (100 * 101 / 2 - (100 - count_of_tasks) *
+                                                            (100 - count_of_tasks + 1) / 2) / 100
+    return will_be_collected - already_collected_points
 
 
 def isStillRelevant(handle, rating):
@@ -164,10 +173,13 @@ def isStillRelevant(handle, rating):
 
 
 def getCountOfSolvedTaskWithContestId(contest_id, handle):
-    request_url = "https://codeforces.com/api/contest.status?contestId=" + str(contest_id) + "&handle=" + str(handle)
-    response = urllib.request.urlopen(request_url)
+    try:
+        request_url = "https://codeforces.com/api/contest.status?contestId=" + str(contest_id) + "&handle=" + str(handle)
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return -1
     solved_indexes = {}
-    res = json.loads(response.read())
     if 'result' not in res or res['status'] != 'OK':
         return -1
     for solution in res['result']:
@@ -196,6 +208,12 @@ def getCountOfRatedContestFromTime(handle, start_time):
 
 def getTaskWithTagAndRating(handle, tag, rating):
     try:
+        request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {'Error', 'incorrect handle'}
+    try:
         request_url = "https://codeforces.com/api/problemset.problems?tags=" + str(tag)
         response = urllib.request.urlopen(request_url)
         res = json.loads(response.read())
@@ -208,7 +226,7 @@ def getTaskWithTagAndRating(handle, tag, rating):
     for task in res['result']['problems']:
         if 'rating' not in task or 'contestId' not in task or 'index' not in task or 'name' not in task:
             continue
-        if task['rating'] == rating and task['name'] not in solved_tasks[rating]:
+        if str(task['rating']) == str(rating) and task['name'] not in solved_tasks[rating]:
             list_of_unsolved_tasks.append("https://codeforces.com/problemset/problem/" + str(task['contestId']) +
                                           '/' + str(task['index']))
     size = len(list_of_unsolved_tasks)
