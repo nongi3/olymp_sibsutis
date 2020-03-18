@@ -88,6 +88,18 @@ def getVkIdFromCodeforces(handle):
     return str(res['result'][0]['vkId'])
 
 
+def get_codeforces_rating(handle):
+    try:
+        request_url = 'http://codeforces.com/api/user.info?handles=' + handle
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return 'Error'
+    if 'status' not in res or res['status'] != 'OK' or 'result' not in res or 'rating' not in res['result'][0]:
+        return 'Error'
+    return res['result'][0]['rating']
+
+
 def getTimeOfLastSubmissionWithHandle(handle):
     info = getInfoAboutSolvedTasksWithHandle(handle)
     if 'Error' in info:
