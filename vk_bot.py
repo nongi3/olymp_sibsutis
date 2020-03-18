@@ -36,6 +36,10 @@ def makeTopic(name):
         'attachments': []})
 
 
+def is_correct_rating(rating):
+    return 500 <= rating <= 3000 and rating % 100 == 0
+
+
 def isCompMath(event, command):
     a = command.split()
     if len(a) < 2 or a[0] != 'вычмат':
@@ -369,7 +373,7 @@ def checkOnCountOfSolvedTasksCommand(command):
     if not words[1].isdigit():
         return False
     rating = int(words[1])
-    return words[0] in constants.COUNT_OF_SOLVED_TASKS_ and rating % 100 == 0 and 500 < rating < 3000
+    return words[0] in constants.COUNT_OF_SOLVED_TASKS_ and is_correct_rating(rating)
 
 
 def isCountOfSolvedTasks(event, command):
@@ -378,6 +382,25 @@ def isCountOfSolvedTasks(event, command):
         rating = command.split()[1]
         count_of_solved_tasks = cf_api.countOfTasksWithRating(handle, rating)
         writeMessage(event.user_id, 'Вы решили ' + str(count_of_solved_tasks) + ' задач с рейтингом ' + str(rating))
+        return True
+    return False
+
+
+def checkOnCountOfPointsWithRating(command):
+    split_command = command.split()
+    if len(split_command) != 2 or not split_command[1].isdigit():
+        return False
+    rating = int(split_command[1])
+    return split_command[0] in constants.COUNT_OF_POINTS_FOR_SOME_RATING_ and is_correct_rating(rating)
+
+
+def isCountOfPointsWithRating(event, command):
+    if checkOnCountOfPointsWithRating(command):
+        handle = table.getHandleWithVkId(event.user_id)
+        rating = int(command.split()[1])
+        count_of_points = cf_api.countOfPointsForATaskWithRating(handle, rating)
+        writeMessage(event.user_id, handle + ' получит ' + str(count_of_points) + ' баллов за задачу с рейтингом '
+                     + str(rating))
         return True
     return False
 
@@ -409,6 +432,8 @@ def isFromUser(event):
     # if not isActiveUser(event):           # return back later
     #     writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
     #     return True
+    if isCountOfPointsWithRating(event, command):
+        return True
     if isCountOfSolvedTasks(event, command):
         return True
     if isGiveATask(event, command):
