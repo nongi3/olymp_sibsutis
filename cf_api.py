@@ -266,3 +266,14 @@ def getCountOfSubmissionsForAMonth(handle):
             break
         count_of_sub += 1
     return count_of_sub
+
+
+def get_count_of_solved_tasks_for_some_days(handle, count_of_days):
+    info_about_solved_tasks = getInfoAboutSolvedTasksWithHandle(handle)
+    start = time.mktime(datetime.datetime.now().timetuple()) - 86400 * count_of_days
+    count_of_solved_task = 0
+    for rating in info_about_solved_tasks:
+        for name in info_about_solved_tasks[rating]:
+            if info_about_solved_tasks[rating][name]['creationTimeSeconds'] >= start:
+                count_of_solved_task += 1
+    return count_of_solved_task

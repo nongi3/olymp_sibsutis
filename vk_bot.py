@@ -363,7 +363,11 @@ def isGiveATask(event, command):
 
 
 def isActiveUser(event):
-    return cf_api.getCountOfSubmissionsForAMonth(table.getHandleWithVkId(event.user_id)) >= 60
+    handle = table.getHandleWithVkId(event.user_id)
+    cf_rating = cf_api.get_codeforces_rating(handle)
+    table_rating = table.getPointsWithVkId(event.user_id)
+    count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
+    return int(cf_rating) >= 1400 or int(table_rating) >= 1000 or int(count_of_accept) >= 60
 
 
 def checkOnCountOfSolvedTasksCommand(command):
@@ -407,17 +411,9 @@ def isCountOfPointsWithRating(event, command):
 
 def isFromUser(event):
     command = event.text.lower()
-    if isSyncCommand(event, command):
-        return True
-    if not isUserLogin(event.user_id):
-        return True
     if isGood(event, command):
         return True
     if isBad(event, command):
-        return True
-    if isBalance(event, command):
-        return True
-    if isPosition(event, command):
         return True
     if isGreeting(event, command):
         return True
@@ -425,13 +421,23 @@ def isFromUser(event):
         return True
     if isHelp(event, command):
         return True
-    if isLeaders(event, command):
-        return True
     if isCompMath(event, command):
         return True
-    # if not isActiveUser(event):           # return back later
-    #     writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
-    #     return True
+    if isSyncCommand(event, command):
+        return True
+    if not isUserLogin(event.user_id):
+        return True
+    # выше функции для гостя
+    if isBalance(event, command):
+        return True
+    if isPosition(event, command):
+        return True
+    if isLeaders(event, command):
+        return True
+    # выше функции новичка
+    if not isActiveUser(event):
+        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
+        return True
     if isCountOfPointsWithRating(event, command):
         return True
     if isCountOfSolvedTasks(event, command):
@@ -440,10 +446,12 @@ def isFromUser(event):
         return True
     if isReset(event, command):
         return True
+    # выше функции продвинутого
     if isPing(event, command):
         return True
     if isTaskList(event, command):
         return True
+    # выше функции эксперта
     return False
 
 
