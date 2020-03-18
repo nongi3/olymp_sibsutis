@@ -370,6 +370,38 @@ def isActiveUser(event):
     return int(cf_rating) >= 1400 or int(table_rating) >= 1000 or int(count_of_accept) >= 60
 
 
+def isExpert(event):
+    handle = table.getHandleWithVkId(event.user_id)
+    cf_rating = cf_api.get_codeforces_rating(handle)
+    table_rating = table.getPointsWithVkId(event.user_id)
+    count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
+    return int(cf_rating) >= 1600 or int(table_rating) >= 2000 or int(count_of_accept) >= 100
+
+
+def isChampion(event):
+    handle = table.getHandleWithVkId(event.user_id)
+    cf_rating = cf_api.get_codeforces_rating(handle)
+    table_rating = table.getPointsWithVkId(event.user_id)
+    count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
+    return int(cf_rating) >= 1900 or int(table_rating) >= 5000 or int(count_of_accept) >= 150
+
+
+def isRank(event, command):
+    if command in constants.RANK_:
+        if isChampion(event):
+            writeMessage(event.user_id, table.getHandleWithVkId(event.user_id) + ' находится в ранге чемпиона!')
+        elif isExpert(event):
+            writeMessage(event.user_id, table.getHandleWithVkId(event.user_id) + ' находится в ранге эксперта!')
+        elif isActiveUser(event):
+            writeMessage(event.user_id, table.getHandleWithVkId(event.user_id) + ' находится в ранге продвинутого!')
+        elif isUserLogin(event.user_id):
+            writeMessage(event.user_id, table.getHandleWithVkId(event.user_id) + ' находится в ранге новичка!')
+        else:
+            writeMessage(event.user_id, table.getHandleWithVkId(event.user_id) + ' находится в ранге гостя!')
+        return True
+    return False
+
+
 def checkOnCountOfSolvedTasksCommand(command):
     words = command.split()
     if len(words) != 2:
@@ -426,6 +458,8 @@ def isFromUser(event):
     if isSyncCommand(event, command):
         return True
     if not isUserLogin(event.user_id):
+        return True
+    if isRank(event, command):
         return True
     # выше функции для гостя
     if isBalance(event, command):

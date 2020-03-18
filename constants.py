@@ -59,3 +59,5 @@ TRAINING_FIRST_FORMAT_ = ['список задач', 'task list']
 COUNT_OF_SOLVED_TASKS_ = ['количество_сданных_задач', 'count_of_solved_tasks']
 
 COUNT_OF_POINTS_FOR_SOME_RATING_ = ['количество_баллов_за_рейтинг', 'count_of_points_for_rating']
+
+RANK_ = ['rank', 'ранг', 'звание']
