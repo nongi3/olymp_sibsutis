@@ -8,6 +8,7 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 
 import cf_api
 import constants
+import dist_vic
 import secret_constants
 import table
 import ddt
@@ -492,8 +493,24 @@ def isUpgrade(event, command):
     return False
 
 
+def isDist(event, command):
+    split_command = command.split()
+    if len(split_command) != 5:
+        return False
+    if split_command[0] not in constants.DIST_:
+        return False
+    for i in range(1, 3):
+        if not split_command[i].isdigit():
+            return False
+    dist_vic.setLab(split_command[2], split_command[3], split_command[1], split_command[4])
+    writeMessage(event.user_id, 'Данные успешно записаны в таблицу!')
+    return True
+
+
 def isFromUser(event):
     command = event.text.lower()
+    if isDist(event, command):
+        return True
     if isGood(event, command):
         return True
     if isBad(event, command):
