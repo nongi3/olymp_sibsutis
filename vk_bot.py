@@ -509,7 +509,7 @@ def isDist(event, command):
 
 def isFromUser(event):
     command = event.text.lower()
-    if isDist(event, command):
+    if isDist(event, event.text):
         return True
     if isGood(event, command):
         return True
