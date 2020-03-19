@@ -46,6 +46,6 @@ def setAllUsersInfo(values, group):
 
 def setLab(row, col, group, url):
     info = getAllUsersInfo(group)
-    if 2 <= row <= len(info) and 1 <= col <= 12:
+    if 2 <= int(row) <= len(info) and 1 <= int(col) <= 12:
         info[row - 2][col] = url
         setAllUsersInfo(info, group)

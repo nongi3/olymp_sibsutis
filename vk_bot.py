@@ -502,7 +502,7 @@ def isDist(event, command):
     for i in range(1, 3):
         if not split_command[i].isdigit():
             return False
-    dist_vic.setLab(split_command[2], split_command[3], split_command[1], split_command[4])
+    dist_vic.setLab(int(split_command[2]), int(split_command[3]), split_command[1], split_command[4])
     writeMessage(event.user_id, 'Данные успешно записаны в таблицу!')
     return True
 
