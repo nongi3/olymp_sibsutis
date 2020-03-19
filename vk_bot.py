@@ -459,6 +459,39 @@ def isCountOfSolvedTasksFor(event, command):
     return False
 
 
+def isUpgrade(event, command):
+    if command in constants.UPGRADE_:
+        handle = table.getHandleWithVkId(event.user_id)
+        cf_rating = int(cf_api.get_codeforces_rating(handle))
+        table_rating = table.getPointsWithVkId(event.user_id)
+        count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
+        if isChampion(event):
+            writeMessage(event.user_id, 'Вы на вершине и расти больше некуда!')
+        elif isExpert(event):
+            writeMessage(event.user_id, 'До ранга чемпион вам осталось:\n' +
+                         str(1900 - cf_rating) + ' рейтинга на кодфорсе\n' +
+                         str(5000 - table_rating) + ' рейтинга в таблице\n' +
+                         'или ' + str(150 - count_of_accept) + ' задач')
+            writeMessage(event.user_id, 'Обращаю ваше внимание, что количество задач рассматривается '
+                                        'за последние 30 дней. Это значит, что это число может уменьшаться.')
+        elif isActiveUser(event):
+            writeMessage(event.user_id, 'До ранга эксперт вам осталось:\n' +
+                         str(1600 - cf_rating) + ' рейтинга на кодфорсе\n' +
+                         str(2000 - table_rating) + ' рейтинга в таблице\n' +
+                         'или ' + str(100 - count_of_accept) + ' задач')
+            writeMessage(event.user_id, 'Обращаю ваше внимание, что количество задач рассматривается '
+                                        'за последние 30 дней. Это значит, что это число может уменьшаться.')
+        else:
+            writeMessage(event.user_id, 'До ранга продвинутый вам осталось:\n' +
+                         str(1400 - cf_rating) + ' рейтинга на кодфорсе\n' +
+                         str(1000 - table_rating) + ' рейтинга в таблице\n' +
+                         'или ' + str(60 - count_of_accept) + ' задач')
+            writeMessage(event.user_id, 'Обращаю ваше внимание, что количество задач рассматривается '
+                                        'за последние 30 дней. Это значит, что это число может уменьшаться.')
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isGood(event, command):
@@ -487,6 +520,8 @@ def isFromUser(event):
     if isLeaders(event, command):
         return True
     if isCountOfSolvedTasksFor(event, command):
+        return True
+    if isUpgrade(event, command):
         return True
     # выше функции новичка
     if not isActiveUser(event):

@@ -63,3 +63,5 @@ COUNT_OF_POINTS_FOR_SOME_RATING_ = ['количество_баллов_за_ре
 RANK_ = ['rank', 'ранг', 'звание']
 
 COUNT_OF_SOLVED_TASKS_FOR_ = ['количество_сданных_задач_за', 'count_of_solved_tasks_for']
+
+UPGRADE_ = ['upgrade', 'повышение']
