@@ -441,6 +441,24 @@ def isCountOfPointsWithRating(event, command):
     return False
 
 
+def checkOnCountOfSolvedTasksFor(command):
+    split_command = command.split()
+    if len(split_command) != 2 or not split_command[1].isdigit():
+        return False
+    return split_command[0] in constants.COUNT_OF_SOLVED_TASKS_FOR_
+
+
+def isCountOfSolvedTasksFor(event, command):
+    if checkOnCountOfSolvedTasksFor(command):
+        handle = table.getHandleWithVkId(event.user_id)
+        count_of_days = int(command.split()[1])
+        count_of_solved_tasks = cf_api.get_count_of_solved_tasks_for_some_days(handle, count_of_days)
+        writeMessage(event.user_id, handle + ' решил ' + str(count_of_solved_tasks) + ' задач за последние ' +
+                     str(count_of_days) + ' дней.')
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isGood(event, command):
@@ -468,10 +486,12 @@ def isFromUser(event):
         return True
     if isLeaders(event, command):
         return True
+    if isCountOfSolvedTasksFor(event, command):
+        return True
     # выше функции новичка
     if not isActiveUser(event):
-        writeMessage(event.user_id, 'Старайтесь больше, сдавайте больше задач, чтобы вернуться в ряды тру кодеров!')
-        return True
+        writeMessage(event.user_id, 'Сдавайте больше задач, чтобы попасть в ряды тру кодеров!')
+        return False
     if isCountOfPointsWithRating(event, command):
         return True
     if isCountOfSolvedTasks(event, command):
@@ -481,11 +501,15 @@ def isFromUser(event):
     if isReset(event, command):
         return True
     # выше функции продвинутого
+    if not isExpert(event):
+        return False
     if isPing(event, command):
         return True
     if isTaskList(event, command):
         return True
     # выше функции эксперта
+    if not isChampion(event):
+        return False
     return False
 
 
