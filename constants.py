@@ -78,5 +78,6 @@ DIST_ = ['dist', 'дист']
 
 comp_start_time = 1585198800
 COMP_RESET_ = ['соревнование_обнови', 'competition_reset']
+COMP_RESET_ALL_ = ['соревнование_обнови_всех', 'competition_reset_all']
 
 # end of competition

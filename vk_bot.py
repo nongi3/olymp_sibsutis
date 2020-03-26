@@ -522,6 +522,16 @@ def isCompReset(event, command):
     return False
 
 
+def isCompResetAll(event, command):
+    if command in constants.COMP_RESET_ALL_:
+        info = table.getAllUsersInfo()
+        for user in info:
+            table.resetCompPointsWithVkId(user[constants.TABLE_COLUMN_VK_ID_])
+        writeMessage(event.user_id, 'Данные о всех участниках соревнования обновлены!')
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -572,6 +582,8 @@ def isFromUser(event):
     # выше функции продвинутого
     if not isExpert(event):
         return False
+    if isCompResetAll(event, command):
+        return True
     if isPing(event, command):
         return True
     if isTaskList(event, command):
