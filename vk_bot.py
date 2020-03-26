@@ -512,6 +512,16 @@ def isDist(event, command):
     return True
 
 
+def isCompReset(event, command):
+    if command in constants.COMP_RESET_:
+        if not table.resetCompPointsWithVkId(event.user_id):
+            writeMessage(event.user_id, 'Что-то пошло не так при обновлении. Попробуйте позже.')
+            return True
+        writeMessage(event.user_id, 'Баллы в соревновании успешно обновлены!')
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -535,6 +545,8 @@ def isFromUser(event):
     if isRank(event, command):
         return True
     # выше функции для гостя
+    if isCompReset(event, command):
+        return True
     if isBalance(event, command):
         return True
     if isPosition(event, command):

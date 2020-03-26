@@ -277,3 +277,18 @@ def get_count_of_solved_tasks_for_some_days(handle, count_of_days):
             if info_about_solved_tasks[rating][name]['creationTimeSeconds'] >= start:
                 count_of_solved_task += 1
     return count_of_solved_task
+
+
+def count_of_comp_points(handle):
+    info = getInfoAboutSolvedTasksWithHandle(handle)
+    if 'Error' in info:
+        return -1
+    points = 0
+    for rating in info:
+        for name in info[rating]:
+            if info[rating][name]['creationTimeSeconds'] >= constants.comp_start_time:
+                r = rating
+                if rating == 0:
+                    r = 1500
+                points += (r - 500) / 100
+    return points

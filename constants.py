@@ -4,6 +4,7 @@ TABLE_COLUMN_HANDLE_ = 0
 TABLE_COLUMN_VK_ID_ = 1
 TABLE_COLUMN_PROBLEMSET_ = 2
 TABLE_COLUMN_GYMS_ = 3
+TABLE_COLUMN_COMP_ = 4
 # end of table constants
 
 # goods constants
@@ -67,9 +68,15 @@ COUNT_OF_SOLVED_TASKS_FOR_ = ['количество_сданных_задач_з
 UPGRADE_ = ['upgrade', 'повышение']
 
 
-
 # dist_vic
 
 DIST_ = ['dist', 'дист']
 
 # end of dist_vic
+
+# competition
+
+comp_start_time = 1585198800
+COMP_RESET_ = ['соревнование_обнови', 'competition_reset']
+
+# end of competition

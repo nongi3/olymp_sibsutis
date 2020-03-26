@@ -14,14 +14,14 @@ import cf_api
 def getAllUsersInfo():
     values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.spreadsheet_id,
-        range='A2:D200',
+        range='A2:E200',
         majorDimension='ROWS'
     ).execute()
     return values['values']
 
 
 def setAllUsersInfo(values):
-    data = {'range': 'A2:D200', 'majorDimension': 'ROWS',
+    data = {'range': 'A2:E200', 'majorDimension': 'ROWS',
             'values': sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_PROBLEMSET_]), reverse=True)}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
 
@@ -68,6 +68,19 @@ def resetGymPointsWithVkId(vk_id):
             if gym_points == -1:
                 return False
             value[constants.TABLE_COLUMN_GYMS_] = gym_points
+            setAllUsersInfo(values)
+            return True
+    return False
+
+
+def resetCompPointsWithVkId(vk_id):
+    values = getAllUsersInfo()
+    for value in values:
+        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
+            comp_points = cf_api.count_of_comp_points(value[constants.TABLE_COLUMN_HANDLE_])
+            if comp_points == -1:
+                return False
+            value[constants.TABLE_COLUMN_COMP_] = comp_points
             setAllUsersInfo(values)
             return True
     return False
