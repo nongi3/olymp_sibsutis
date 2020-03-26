@@ -100,6 +100,13 @@ def printLeaders(event):
                      leaders[i][constants.TABLE_COLUMN_PROBLEMSET_])
 
 
+def printCompLeaders(event, leaders):
+    writeMessage(event.user_id, 'Десятка лидеров соревнования:')
+    for i in range(0, 10):
+        writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
+                     leaders[i][constants.TABLE_COLUMN_COMP_])
+
+
 def isBinding(event):
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
             event.user_id in sync_list:
@@ -532,6 +539,17 @@ def isCompResetAll(event, command):
     return False
 
 
+def isCompLeaders(event, command):
+    if command in constants.COMP_LEADERS_:
+        leaders = table.getLeadersOfCompetition()
+        if len(leaders) == 0:
+            writeMessage(event.user_id, 'Не удалось получить информацию о лидерах :-(')
+            return True
+        printCompLeaders(event, leaders)
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -556,6 +574,8 @@ def isFromUser(event):
         return True
     # выше функции для гостя
     if isCompReset(event, command):
+        return True
+    if isCompLeaders(event, command):
         return True
     if isBalance(event, command):
         return True

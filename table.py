@@ -160,3 +160,16 @@ def getLeaders():
             break
         res.append(value)
     return res
+
+
+def getLeadersOfCompetition():
+    values = getAllUsersInfo()
+    if 'Error' in values:
+        return []
+    values = sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_COMP_]), reverse=True)
+    res = []
+    for value in values:
+        if len(res) == 10:
+            break
+        res.append(value)
+    return res
