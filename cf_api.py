@@ -284,18 +284,17 @@ def count_of_comp_points(handle):
     if 'Error' in info:
         return -1
     points = 0
+    max_creation_time_seconds = 0
     for rating in info:
         for name in info[rating]:
-            if info[rating][name]['creationTimeSeconds'] <= constants.comp_time_of_last_reset[handle]:
+            if handle in constants.comp_time_of_last_reset and \
+                    info[rating][name]['creationTimeSeconds'] <= constants.comp_time_of_last_reset[handle]:
                 break
             if info[rating][name]['creationTimeSeconds'] >= constants.comp_start_time:
-                if handle not in constants.comp_time_of_last_reset:
-                    constants.comp_time_of_last_reset[handle] = info[rating][name]['creationTimeSeconds']
-                else:
-                    constants.comp_time_of_last_reset[handle] = max(info[rating][name]['creationTimeSeconds'],
-                                                                    constants.comp_time_of_last_reset[handle])
+                max_creation_time_seconds = max(info[rating][name]['creationTimeSeconds'],max_creation_time_seconds)
                 r = rating
                 if rating == 0:
                     r = 1500
                 points += (r - 500) / 100
+    constants.comp_time_of_last_reset[handle] = max_creation_time_seconds
     return points
