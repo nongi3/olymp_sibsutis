@@ -81,6 +81,4 @@ COMP_RESET_ = ['соревнование_обнови', 'competition_reset']
 COMP_RESET_ALL_ = ['соревнование_обнови_всех', 'competition_reset_all']
 COMP_LEADERS_ = ['соревнование_лидеры', 'competition_leaders']
 
-comp_time_of_last_reset = {}
-
 # end of competition
