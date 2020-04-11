@@ -14,6 +14,7 @@ import table
 import ddt
 
 vk_session = vk_api.VkApi(token=secret_constants.token)
+# vk_session = vk_api.VkApi(login='#', password='#', token=secret_constants.token, scope='wall, messages')
 
 longpoll = VkLongPoll(vk_session)
 vk = vk_session.get_api()
@@ -105,6 +106,15 @@ def printCompLeaders(event, leaders):
     for i in range(0, 10):
         writeMessage(event.user_id, str(i + 1) + ') ' + leaders[i][constants.TABLE_COLUMN_HANDLE_] + ' - ' +
                      leaders[i][constants.TABLE_COLUMN_COMP_])
+
+
+def isCompGetPoints(event, command):
+    if command in constants.COMP_GET_POINTS_:
+        writeMessage(event.user_id, 'На данный момент у вас ' +
+                     str(cf_api.count_of_comp_points(table.getHandleWithVkId(event.user_id)))
+                     + ' баллов.')
+        return True
+    return False
 
 
 def isBinding(event):
@@ -573,10 +583,12 @@ def isFromUser(event):
     if isRank(event, command):
         return True
     # выше функции для гостя
-    if isCompReset(event, command):
+    if isCompGetPoints(event, command):
         return True
-    if isCompLeaders(event, command):
-        return True
+    # if isCompReset(event, command):
+    #     return True
+    # if isCompLeaders(event, command):
+    #     return True
     if isBalance(event, command):
         return True
     if isPosition(event, command):
@@ -602,8 +614,8 @@ def isFromUser(event):
     # выше функции продвинутого
     if not isExpert(event):
         return False
-    if isCompResetAll(event, command):
-        return True
+    # if isCompResetAll(event, command):
+    #     return True
     if isPing(event, command):
         return True
     if isTaskList(event, command):
@@ -628,3 +640,8 @@ def main():
 
 
 main()
+
+
+# vk_session.auth()
+# vk_session.method('messages.send', {'user_id': 30806644, 'message': 'msg', 'random_id': 12415215})
+# print(vk_session.method('wall.get', {'owner_id': -189233231, 'count': 1}))
