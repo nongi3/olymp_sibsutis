@@ -233,7 +233,7 @@ def isReset(event, command):
         writeMessage(event.user_id, 'Вы находитесь на ' + str(position) + ' месте.')
         return True
     elif command in constants.RESET_ALL_USERS_POINTS_:
-        if str(event.user_id) not in constants.ADMIN_VK_ID_:
+        if str(event.user_id) not in constants.ADMIN_VK_ID_ and not isChampion(event):
             writeMessage(event.user_id, 'Вам не доступна эта команда!')
             return True
         writeMessage(event.user_id, 'Обновление таблицы может занять некоторое время!')
@@ -301,7 +301,7 @@ def isChangeHeader(event, command):
 
 def onDelete(event, command):
     if command == 'вот же петуч':
-        tasks = ddt.specialForYou()
+        tasks = ddt.taskDiffOfTwoUsers('justBoss', 'fancyFox')
         if len(tasks) == 0:
             writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
             return True
@@ -329,15 +329,6 @@ def isFromAdmin(event):
         if onDelete(event, command):
             return True
         return False
-    return False
-
-
-def isTaskList(event, command):
-    if command in constants.TRAINING_FIRST_FORMAT_:
-        tasks = ddt.some_unsolved_tasks()
-        for task in tasks:
-            writeMessage(event.user_id, task)
-        return True
     return False
 
 
@@ -570,8 +561,6 @@ def isFromUser(event):
     if not isExpert(event):
         return False
     if isPing(event, command):
-        return True
-    if isTaskList(event, command):
         return True
     # выше функции эксперта
     if not isChampion(event):
