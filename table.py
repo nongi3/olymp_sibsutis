@@ -73,19 +73,6 @@ def resetGymPointsWithVkId(vk_id):
     return False
 
 
-def resetCompPointsWithVkId(vk_id):
-    values = getAllUsersInfo()
-    for value in values:
-        if str(value[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
-            comp_points = cf_api.count_of_comp_points(value[constants.TABLE_COLUMN_HANDLE_])
-            if comp_points == -1:
-                return False
-            value[constants.TABLE_COLUMN_COMP_] = comp_points
-            setAllUsersInfo(values)
-            return True
-    return False
-
-
 def getHandleWithVkId(vk_id):
     values = getAllUsersInfo()
     for value in values:
@@ -157,19 +144,6 @@ def getLeaders():
     for value in values:
         ind = ind + 1
         if ind > 10:
-            break
-        res.append(value)
-    return res
-
-
-def getLeadersOfCompetition():
-    values = getAllUsersInfo()
-    if 'Error' in values:
-        return []
-    values = sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_COMP_]), reverse=True)
-    res = []
-    for value in values:
-        if len(res) == 10:
             break
         res.append(value)
     return res

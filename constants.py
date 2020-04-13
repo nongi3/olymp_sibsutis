@@ -68,18 +68,11 @@ COUNT_OF_SOLVED_TASKS_FOR_ = ['количество_сданных_задач_з
 UPGRADE_ = ['upgrade', 'повышение']
 
 
+VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
+
+
 # dist_vic
 
 DIST_ = ['dist', 'дист']
 
 # end of dist_vic
-
-# competition
-
-comp_start_time = 1585198800
-COMP_RESET_ = ['соревнование_обнови', 'competition_reset']
-COMP_RESET_ALL_ = ['соревнование_обнови_всех', 'competition_reset_all']
-COMP_LEADERS_ = ['соревнование_лидеры', 'competition_leaders']
-COMP_GET_POINTS_ = ['соревнование_мои_баллы']
-
-# end of competition

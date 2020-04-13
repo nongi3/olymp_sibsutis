@@ -108,15 +108,6 @@ def printCompLeaders(event, leaders):
                      leaders[i][constants.TABLE_COLUMN_COMP_])
 
 
-def isCompGetPoints(event, command):
-    if command in constants.COMP_GET_POINTS_:
-        writeMessage(event.user_id, 'На данный момент у вас ' +
-                     str(cf_api.count_of_comp_points(table.getHandleWithVkId(event.user_id)))
-                     + ' баллов.')
-        return True
-    return False
-
-
 def isBinding(event):
     if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
             event.user_id in sync_list:
@@ -529,37 +520,6 @@ def isDist(event, command):
     return True
 
 
-def isCompReset(event, command):
-    if command in constants.COMP_RESET_:
-        if not table.resetCompPointsWithVkId(event.user_id):
-            writeMessage(event.user_id, 'Что-то пошло не так при обновлении. Попробуйте позже.')
-            return True
-        writeMessage(event.user_id, 'Баллы в соревновании успешно обновлены!')
-        return True
-    return False
-
-
-def isCompResetAll(event, command):
-    if command in constants.COMP_RESET_ALL_:
-        info = table.getAllUsersInfo()
-        for user in info:
-            table.resetCompPointsWithVkId(user[constants.TABLE_COLUMN_VK_ID_])
-        writeMessage(event.user_id, 'Данные о всех участниках соревнования обновлены!')
-        return True
-    return False
-
-
-def isCompLeaders(event, command):
-    if command in constants.COMP_LEADERS_:
-        leaders = table.getLeadersOfCompetition()
-        if len(leaders) == 0:
-            writeMessage(event.user_id, 'Не удалось получить информацию о лидерах :-(')
-            return True
-        printCompLeaders(event, leaders)
-        return True
-    return False
-
-
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -583,12 +543,6 @@ def isFromUser(event):
     if isRank(event, command):
         return True
     # выше функции для гостя
-    if isCompGetPoints(event, command):
-        return True
-    # if isCompReset(event, command):
-    #     return True
-    # if isCompLeaders(event, command):
-    #     return True
     if isBalance(event, command):
         return True
     if isPosition(event, command):
@@ -614,8 +568,6 @@ def isFromUser(event):
     # выше функции продвинутого
     if not isExpert(event):
         return False
-    # if isCompResetAll(event, command):
-    #     return True
     if isPing(event, command):
         return True
     if isTaskList(event, command):
