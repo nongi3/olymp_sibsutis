@@ -397,7 +397,8 @@ def isChampion(event):
     cf_rating = cf_api.get_codeforces_rating(handle)
     table_rating = table.getPointsWithVkId(event.user_id)
     count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
-    return int(cf_rating) >= 1900 or int(table_rating) >= 5000 or int(count_of_accept) >= 150
+    return int(cf_rating) >= 1900 or int(table_rating) >= 5000 or int(count_of_accept) >= 150 or \
+        handle in constants.VIP_USERS_
 
 
 def isRank(event, command):
@@ -592,7 +593,6 @@ def main():
 
 
 main()
-
 
 # vk_session.auth()
 # vk_session.method('messages.send', {'user_id': 30806644, 'message': 'msg', 'random_id': 12415215})
