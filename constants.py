@@ -76,3 +76,9 @@ VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
 DIST_ = ['dist', 'дист']
 
 # end of dist_vic
+
+# black list
+
+BLACK_LIST_ = ['418023132', '301182271']
+
+# end of black list
