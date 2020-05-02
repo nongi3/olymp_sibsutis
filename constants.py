@@ -80,6 +80,9 @@ USERS_DIFF_ = ['дифф_задач', 'tasks_diff']
 VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
 
 
+CHAMPION_ACTIVATE_ = ['включить_чемпиона', 'включи_чемпиона']
+CHAMPION_DEACTIVATE = ['выключить_чемпиона']
+
 
 # dist_vic
 

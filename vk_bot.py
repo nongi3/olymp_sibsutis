@@ -26,6 +26,7 @@ def writeMessage(user_id, msg):
 
 
 sync_list = []
+champion_list = []
 
 
 def makeTopic(name):
@@ -554,6 +555,36 @@ def isUserLink(event, command):
     return False
 
 
+def isChampionActivate(event, command):
+    if command in constants.CHAMPION_ACTIVATE_:
+        champion_list.append(str(event.user_id))
+        writeMessage(event.user_id, 'Вы перешли в режим чемпиона. '
+                                    'Теперь вы можете применять функции по отношению к другим пользователям, '
+                                    'но не можете использовать их по отношению к себе.'
+                                    'Помните! Чем больше сила, тем больше ответственность!\n'
+                                    'Для выхода из режима чемпиона введите: выключить чемпиона')
+        return True
+    return False
+
+
+def isChampionDeactivate(event, command):
+    if command in constants.CHAMPION_DEACTIVATE:
+        writeMessage(event.user_id, 'Вы вышли из режима чемпиона!')
+        return True
+    return False
+
+
+def isChampionActivatedYet(event, command):
+    split_command = command.split()
+    if len(split_command) == 3:
+        if split_command[0] in constants.COUNT_OF_SOLVED_TASKS_ and split_command[1].isdigit():
+            count_of_solved_tasks = cf_api.countOfTasksWithRating(split_command[2], split_command[1])
+            writeMessage(event.user_id, split_command[2] + ' решил ' + str(count_of_solved_tasks) +
+                         ' задач с рейтингом ' + str(split_command[1]))
+            return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -614,6 +645,12 @@ def isFromUser(event):
     if not isChampion(event):
         return False
     if isUserLink(event, command):
+        return True
+    if isChampionActivate(event, command):
+        return True
+    if isChampionDeactivate(event, command):
+        return True
+    if isChampionActivatedYet(event, command):
         return True
     return False
 
