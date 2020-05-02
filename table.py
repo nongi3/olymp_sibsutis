@@ -14,14 +14,14 @@ import cf_api
 def getAllUsersInfo():
     values = secret_constants.service.spreadsheets().values().get(
         spreadsheetId=secret_constants.spreadsheet_id,
-        range='A2:E200',
+        range='A2:F200',
         majorDimension='ROWS'
     ).execute()
     return values['values']
 
 
 def setAllUsersInfo(values):
-    data = {'range': 'A2:E200', 'majorDimension': 'ROWS',
+    data = {'range': 'A2:F200', 'majorDimension': 'ROWS',
             'values': sorted(values, key=lambda value: int(value[constants.TABLE_COLUMN_PROBLEMSET_]), reverse=True)}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
 
@@ -98,8 +98,8 @@ def getHandles():
 
 
 def changeHeader():
-    data = {'range': 'A1:D1', 'majorDimension': 'Columns',
-            'values': [['Ники на codeforces'], ['vk_id'], ['Очки архива'], ['Очки тренировок']]}
+    data = {'range': 'A1:F1', 'majorDimension': 'Columns',
+            'values': [['Имена'], ['Ники на codeforces'], ['vk_id'], ['Очки архива'], ['Очки тренировок'], ['Группа']]}
     buv = {'value_input_option': 'USER_ENTERED', 'data': data}
     secret_constants.service.spreadsheets().values().batchUpdate(
         spreadsheetId=secret_constants.spreadsheet_id,
@@ -154,6 +154,20 @@ def tryToChangeName(new_name, vk_id):
     for user in users:
         if str(user[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
             user[constants.TABLE_COLUMN_NAME_] = new_name
+            setAllUsersInfo(users)
+            return {}
+    return {'Error': 'something go wrong'}
+
+
+def tryToChangeGroup(new_group, vk_id):
+    users = getAllUsersInfo()
+    for user in users:
+        if len(user) == 0:
+            break
+        if str(user[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
+            while len(user) <= constants.TABLE_COLUMN_STUDING_GROUP_:
+                user.append(" ")
+            user[constants.TABLE_COLUMN_STUDING_GROUP_] = new_group
             setAllUsersInfo(users)
             return {}
     return {'Error': 'something go wrong'}

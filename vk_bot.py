@@ -527,6 +527,22 @@ def isNameChange(event, command):
     return False
 
 
+def isGroupChange(event, command):
+    split_command = command.split()
+    if len(split_command) > 1 and split_command[0] in constants.GROUP_CHANGE_:
+        for i in range(2, len(split_command)):
+            split_command[1] += ' '
+            split_command[1] += split_command[i]
+        print(split_command)
+        if 'Error' not in table.tryToChangeGroup(split_command[1], event.user_id):
+            writeMessage(event.user_id, 'Изменение имени прошло успешно')
+        else:
+            writeMessage(event.user_id, 'Возникла ошибка при изменении имени. Попробуйте позже или напишите '
+                                        'администратору группы')
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -551,6 +567,8 @@ def isFromUser(event):
         return True
     # выше функции для гостя
     if isNameChange(event, command):
+        return True
+    if isGroupChange(event, command):
         return True
     if isBalance(event, command):
         return True
