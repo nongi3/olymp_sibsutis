@@ -147,3 +147,13 @@ def getLeaders():
             break
         res.append(value)
     return res
+
+
+def tryToChangeName(new_name, vk_id):
+    users = getAllUsersInfo()
+    for user in users:
+        if str(user[constants.TABLE_COLUMN_VK_ID_]) == str(vk_id):
+            user[constants.TABLE_COLUMN_NAME_] = new_name
+            setAllUsersInfo(users)
+            return {}
+    return {'Error': 'something go wrong'}

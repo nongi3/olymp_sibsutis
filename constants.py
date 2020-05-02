@@ -1,6 +1,6 @@
 # coding=utf-8
 # table constants
-TABLE_COLUMN_NAME = 0
+TABLE_COLUMN_NAME_ = 0
 TABLE_COLUMN_HANDLE_ = 1
 TABLE_COLUMN_VK_ID_ = 2
 TABLE_COLUMN_PROBLEMSET_ = 3
@@ -67,8 +67,11 @@ COUNT_OF_SOLVED_TASKS_FOR_ = ['количество_сданных_задач_з
 
 UPGRADE_ = ['upgrade', 'повышение']
 
+NAME_CHANGE_ = ['change_name', 'изменить_имя']
+
 
 VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
+
 
 
 # dist_vic
