@@ -277,3 +277,13 @@ def get_count_of_solved_tasks_for_some_days(handle, count_of_days):
             if info_about_solved_tasks[rating][name]['creationTimeSeconds'] >= start:
                 count_of_solved_task += 1
     return count_of_solved_task
+
+
+def getAllTasks():
+    try:
+        request_url = 'https://codeforces.com/api/problemset.problems'
+        response = urllib.request.urlopen(request_url)
+        res = json.loads(response.read())
+    except Exception:
+        return {"Error": "can not get info from cf"}
+    return res['result']['problems']
