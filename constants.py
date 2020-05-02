@@ -87,6 +87,6 @@ DIST_ = ['dist', 'дист']
 
 # black list
 
-BLACK_LIST_ = ['418023132', '301182271']
+BLACK_LIST_ = []
 
 # end of black list
