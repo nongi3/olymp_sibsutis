@@ -535,7 +535,7 @@ def isGroupChange(event, command):
             split_command[1] += split_command[i]
         print(split_command)
         if 'Error' not in table.tryToChangeGroup(split_command[1], event.user_id):
-            writeMessage(event.user_id, 'Изменение имени прошло успешно')
+            writeMessage(event.user_id, 'Изменение группы прошло успешно')
         else:
             writeMessage(event.user_id, 'Возникла ошибка при изменении имени. Попробуйте позже или напишите '
                                         'администратору группы')
