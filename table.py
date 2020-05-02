@@ -91,7 +91,7 @@ def getVkIdWithHandle(handle):
 
 def addNewUser(handle, vk_id):
     values = getAllUsersInfo()
-    tmp = [" ", handle, vk_id, cf_api.findCodeforcesPoints(handle), cf_api.findGymPoints(handle), " "]
+    tmp = [" \t", handle, vk_id, cf_api.findCodeforcesPoints(handle), cf_api.findGymPoints(handle), " "]
     values.append(tmp)
     setAllUsersInfo(values)
 

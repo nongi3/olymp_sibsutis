@@ -615,7 +615,7 @@ def isFromUser(event):
 
 
 def isFromBannedUser(event):
-    if event.user_id in constants.BLACK_LIST_:
+    if str(event.user_id) in constants.BLACK_LIST_:
         writeMessage(event.user_id, 'Вы заблокированы и не можете использовать бота!')
         return True
     return False
