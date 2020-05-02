@@ -81,6 +81,14 @@ def getHandleWithVkId(vk_id):
     return "None"
 
 
+def getVkIdWithHandle(handle):
+    users = getAllUsersInfo()
+    for user in users:
+        if str(user[constants.TABLE_COLUMN_HANDLE_]) == str(handle):
+            return user[constants.TABLE_COLUMN_VK_ID_]
+    return '1'
+
+
 def addNewUser(handle, vk_id):
     values = getAllUsersInfo()
     tmp = [" ", handle, vk_id, cf_api.findCodeforcesPoints(handle), cf_api.findGymPoints(handle), " "]

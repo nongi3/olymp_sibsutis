@@ -543,6 +543,15 @@ def isGroupChange(event, command):
     return False
 
 
+def isUserLink(event, command):
+    split_command = command.split()
+    if len(split_command) == 2 and split_command[0] in constants.USER_LINK_:
+        vk_id = table.getVkIdWithHandle(split_command[1])
+        writeMessage(event.user_id, 'Ссылка на пользователя:\t' + 'https://vk.com/id' + vk_id)
+        return True
+    return False
+
+
 def isFromUser(event):
     command = event.text.lower()
     if isDist(event, event.text):
@@ -600,6 +609,8 @@ def isFromUser(event):
     # выше функции эксперта
     if not isChampion(event):
         return False
+    if isUserLink(event, command):
+        return True
     return False
 
 

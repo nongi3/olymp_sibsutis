@@ -72,6 +72,8 @@ NAME_CHANGE_ = ['change_name', 'изменить_имя']
 
 GROUP_CHANGE_ = ['change_group', 'изменить_группу']
 
+USER_LINK_ = ['get_user_link', 'ссылка_на_пользователя']
+
 
 VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
 
