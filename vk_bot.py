@@ -109,16 +109,18 @@ def printCompLeaders(event, leaders):
 
 
 def isBinding(event):
-    if event.type == VkEventType.MESSAGE_NEW and event.to_me and event.text and event.from_user and \
-            event.user_id in sync_list:
+    if event.user_id in sync_list:
         handle = event.text.lower()
+        if handle == 'stop' or handle == 'отмена' or handle == 'cancel':
+            sync_list.remove(event.user_id)
+            return True
         try:
             request_url = 'http://codeforces.com/api/user.info?handles=' + handle
             response = urllib.request.urlopen(request_url)
             res = json.loads(response.read())
         except Exception:
             writeMessage(event.user_id, 'Что-то пошло не так... Возможно вы ввели неверный ник или ваш профиль на '
-                                        'кодфорсе закрыт')
+                                        'кодфорсе закрыт. Для прекращения регистрации напишите: стоп')
             return True
         if 'result' not in res:
             writeMessage(event.user_id, 'Возникла ошибка при получении данных от cf API')
