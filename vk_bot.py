@@ -299,11 +299,12 @@ def isChangeHeader(event, command):
     return False
 
 
-def onDelete(event, command):
-    if command == 'вот же петуч':
-        tasks = ddt.taskDiffOfTwoUsers('justBoss', 'fancyFox')
+def isUsersDiff(event, command):
+    split_command = command.split()
+    if len(split_command) == 2 and split_command[0] in constants.USERS_DIFF_:
+        tasks = ddt.taskDiffOfTwoUsers(split_command[1], table.getHandleWithVkId(event.user_id))
         if len(tasks) == 0:
-            writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
+            writeMessage(event.user_id, 'Все задачи этого пользователя уже решены вами!')
             return True
         lst = []
         for rating in tasks:
@@ -312,10 +313,11 @@ def onDelete(event, command):
                            str(tasks[rating][name]["contestId"]) + "/"
                            + str(tasks[rating][name]["index"]))
         if len(lst) == 0:
-            writeMessage(event.user_id, 'Все задачи петуча вами уже решены!')
+            writeMessage(event.user_id, 'Все задачи этого пользователя уже решены вами!')
             return True
         ind = random.randint(0, len(lst) - 1)
-        writeMessage(event.user_id, lst[ind])
+        writeMessage(event.user_id, 'У вас не сдано ' + str(len(lst)) + ' задач из списка ' + split_command[1] + '.')
+        writeMessage(event.user_id, 'Вот одна из задач, которая у вас не сдана: \n' + lst[ind])
         return True
     return False
 
@@ -325,8 +327,6 @@ def isFromAdmin(event):
         command = event.text.lower()
         isExit(event, command)
         if isChangeHeader(event, command):
-            return True
-        if onDelete(event, command):
             return True
         return False
     return False
@@ -604,6 +604,8 @@ def isFromUser(event):
     # выше функции продвинутого
     if not isExpert(event):
         return False
+    if isUsersDiff(event, command):
+        return True
     if isPing(event, command):
         return True
     # выше функции эксперта
