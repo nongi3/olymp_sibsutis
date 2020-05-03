@@ -77,7 +77,7 @@ USER_LINK_ = ['get_user_link', 'ссылка_на_пользователя']
 USERS_DIFF_ = ['дифф_задач', 'tasks_diff']
 
 
-VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one']
+VIP_USERS_ = ['lampcomm', 'shise', 'justboss', 'vitaliyilin', 'foxes.one', 'fancyfox']
 
 
 CHAMPION_ACTIVATE_ = ['включить_чемпиона', 'включи_чемпиона']
