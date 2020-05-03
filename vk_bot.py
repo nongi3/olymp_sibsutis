@@ -375,7 +375,8 @@ def isActiveUser(event):
     cf_rating = cf_api.get_codeforces_rating(handle)
     table_rating = table.getPointsWithVkId(event.user_id)
     count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
-    return int(cf_rating) >= 1400 or int(table_rating) >= 1000 or int(count_of_accept) >= 60
+    return int(cf_rating) >= 1400 or int(table_rating) >= 1000 or int(count_of_accept) >= 60 or \
+        handle in constants.VIP_USERS_
 
 
 def isExpert(event):
@@ -383,7 +384,8 @@ def isExpert(event):
     cf_rating = cf_api.get_codeforces_rating(handle)
     table_rating = table.getPointsWithVkId(event.user_id)
     count_of_accept = cf_api.get_count_of_solved_tasks_for_some_days(handle, 30)
-    return int(cf_rating) >= 1600 or int(table_rating) >= 2000 or int(count_of_accept) >= 100
+    return int(cf_rating) >= 1600 or int(table_rating) >= 2000 or int(count_of_accept) >= 100 or \
+        handle in constants.VIP_USERS_
 
 
 def isChampion(event):
